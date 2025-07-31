@@ -95,10 +95,8 @@ const Application = () => {
                   options={companyOptions}
                   value={formData.companyName}
                   onValueChange={(value) => setFormData({...formData, companyName: value})}
-                  placeholder="Select or enter company name"
-                  searchPlaceholder="Search companies..."
-                  emptyText="No company found."
-                  className="mt-1 h-12 w-full"
+                  placeholder="Type company name (min 3 characters)"
+                  className="mt-1 h-12"
                 />
               </div>
             </div>

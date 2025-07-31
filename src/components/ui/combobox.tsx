@@ -1,13 +1,12 @@
 import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
+import { Check } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
@@ -22,8 +21,6 @@ interface ComboboxProps {
   value?: string
   onValueChange: (value: string) => void
   placeholder?: string
-  searchPlaceholder?: string
-  emptyText?: string
   className?: string
 }
 
@@ -31,9 +28,7 @@ export function Combobox({
   options,
   value,
   onValueChange,
-  placeholder = "Select option...",
-  searchPlaceholder = "Search...",
-  emptyText = "No option found.",
+  placeholder = "Type to search...",
   className,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false)
@@ -43,76 +38,74 @@ export function Combobox({
     setInputValue(value || "")
   }, [value])
 
-  const selectedOption = options.find(option => option.value === value)
+  const filteredOptions = React.useMemo(() => {
+    if (inputValue.length < 3) return []
+    return options.filter(option =>
+      option.label.toLowerCase().includes(inputValue.toLowerCase())
+    )
+  }, [options, inputValue])
+
+  const handleInputChange = (newValue: string) => {
+    setInputValue(newValue)
+    onValueChange(newValue)
+    setOpen(newValue.length >= 3 && filteredOptions.length > 0)
+  }
+
+  const handleSelectOption = (optionLabel: string) => {
+    setInputValue(optionLabel)
+    onValueChange(optionLabel)
+    setOpen(false)
+  }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className={cn("justify-between", className)}
-        >
-          {selectedOption?.label || inputValue || placeholder}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0" align="start">
-        <Command>
-          <CommandInput 
-            placeholder={searchPlaceholder}
+    <div className="relative">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Input
             value={inputValue}
-            onValueChange={(search) => {
-              setInputValue(search)
-              // Allow custom entry
-              onValueChange(search)
+            onChange={(e) => handleInputChange(e.target.value)}
+            placeholder={placeholder}
+            className={className}
+            onFocus={() => {
+              if (inputValue.length >= 3 && filteredOptions.length > 0) {
+                setOpen(true)
+              }
             }}
           />
-          <CommandList>
-            <CommandEmpty>
-              {inputValue ? (
-                <div className="p-2">
-                  <div className="text-sm text-muted-foreground mb-2">{emptyText}</div>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-left"
-                    onClick={() => {
-                      onValueChange(inputValue)
-                      setOpen(false)
-                    }}
-                  >
-                    Use "{inputValue}"
-                  </Button>
-                </div>
+        </PopoverTrigger>
+        <PopoverContent className="w-full p-0" align="start" style={{ width: 'var(--radix-popover-trigger-width)' }}>
+          <Command>
+            <CommandList>
+              {filteredOptions.length === 0 ? (
+                <CommandEmpty>
+                  {inputValue.length < 3 
+                    ? "Type at least 3 characters to search"
+                    : "No companies found"
+                  }
+                </CommandEmpty>
               ) : (
-                emptyText
+                <CommandGroup>
+                  {filteredOptions.map((option) => (
+                    <CommandItem
+                      key={option.value}
+                      value={option.value}
+                      onSelect={() => handleSelectOption(option.label)}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          inputValue === option.label ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {option.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
               )}
-            </CommandEmpty>
-            <CommandGroup>
-              {options.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  value={option.value}
-                  onSelect={(currentValue) => {
-                    onValueChange(currentValue)
-                    setInputValue(option.label)
-                    setOpen(false)
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === option.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {option.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    </div>
   )
 }
