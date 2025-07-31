@@ -4,23 +4,42 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import EnhancedCard from "@/components/EnhancedCard";
+import CameraCapture from "@/components/CameraCapture";
 
 const KYC = () => {
   const navigate = useNavigate();
   const [uploadedID, setUploadedID] = useState(false);
   const [faceVerified, setFaceVerified] = useState(false);
+  const [showIDCamera, setShowIDCamera] = useState(false);
+  const [showFaceCamera, setShowFaceCamera] = useState(false);
+  const [idImageData, setIdImageData] = useState<string | null>(null);
+  const [faceImageData, setFaceImageData] = useState<string | null>(null);
   
   // Page progress tracking
   const currentPageStep = 3;
   const totalSteps = 6;
   const steps = ["Login", "Application", "KYC", "Property", "Calculator", "Offer"];
 
-  const handleIDUpload = () => {
+  const handleIDCapture = (imageData: string) => {
+    setIdImageData(imageData);
     setUploadedID(true);
   };
 
-  const handleFaceVerification = () => {
+  const handleFaceCapture = (imageData: string) => {
+    setFaceImageData(imageData);
     setFaceVerified(true);
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        handleIDCapture(result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -81,21 +100,25 @@ const KYC = () => {
                 
                 <div className="grid grid-cols-2 gap-3">
                   <Button 
-                    onClick={handleIDUpload}
+                    onClick={() => setShowIDCamera(true)}
                     variant="outline" 
                     className="h-12 group hover:border-primary/50 transition-all duration-300"
                   >
                     <Camera className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
                     Camera
                   </Button>
-                  <Button 
-                    onClick={handleIDUpload}
-                    variant="outline" 
-                    className="h-12 group hover:border-primary/50 transition-all duration-300"
-                  >
-                    <Upload className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
-                    Upload
-                  </Button>
+                  <label className="cursor-pointer">
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleFileUpload} 
+                      className="hidden"
+                    />
+                    <div className="h-12 group hover:border-primary/50 transition-all duration-300 border border-input rounded-md flex items-center justify-center bg-background hover:bg-accent">
+                      <Upload className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+                      <span className="text-sm font-medium">Upload</span>
+                    </div>
+                  </label>
                 </div>
               </div>
             )}
@@ -149,7 +172,7 @@ const KYC = () => {
                 </div>
                 
                 <Button 
-                  onClick={handleFaceVerification}
+                  onClick={() => setShowFaceCamera(true)}
                   className="w-full h-12 font-semibold bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Start Verification
@@ -182,6 +205,23 @@ const KYC = () => {
           </span>
         </div>
       </div>
+
+      {/* Camera Capture Modals */}
+      <CameraCapture
+        isOpen={showIDCamera}
+        onClose={() => setShowIDCamera(false)}
+        onCapture={handleIDCapture}
+        title="Capture Emirates ID"
+        type="id"
+      />
+
+      <CameraCapture
+        isOpen={showFaceCamera}
+        onClose={() => setShowFaceCamera(false)}
+        onCapture={handleFaceCapture}
+        title="Face Verification"
+        type="face"
+      />
     </PageLayout>
   );
 };
