@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Shield, Clock, DollarSign, ArrowRight, Star, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import EnhancedCard from "@/components/EnhancedCard";
+import Header from "@/components/Header";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -11,13 +12,13 @@ const Landing = () => {
       icon: DollarSign,
       title: "Competitive Rates",
       description: "Starting from 3.49% APR with zero hidden fees",
-      highlight: "Best Rate Guarantee"
+      highlight: "Best Rate"
     },
     {
       icon: Clock,
       title: "Instant Approval", 
       description: "Get pre-approved in under 10 minutes",
-      highlight: "AI-Powered Processing"
+      highlight: "AI-Powered"
     },
     {
       icon: Shield,
@@ -29,37 +30,39 @@ const Landing = () => {
 
   const benefits = [
     "No processing fees or hidden charges",
-    "Free property valuation included",
+    "Free property valuation included", 
     "Flexible repayment terms up to 25 years",
     "Dedicated relationship manager"
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/5 to-primary/5">
-      <div className="container mx-auto px-4 py-8 max-w-md">
+      <Header />
+      
+      <div className="container mx-auto px-4 py-6 max-w-md">
         {/* Hero Section */}
-        <div className="text-center mb-12 pt-12 animate-fade-in">
+        <div className="text-center mb-10 animate-fade-in">
           {/* Trust Badge */}
           <div className="inline-flex items-center space-x-2 bg-primary/10 px-4 py-2 rounded-full mb-6 border border-primary/20">
             <Star className="h-4 w-4 text-primary fill-primary" />
             <span className="text-primary text-sm font-medium">UAE's #1 Digital Mortgage</span>
           </div>
 
-          <h1 className="text-4xl font-bold text-foreground mb-4 leading-tight tracking-tight">
+          <h1 className="text-3xl font-bold text-foreground mb-4 leading-tight tracking-tight">
             Your Dream Home<br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               in Minutes
             </span>
           </h1>
           
-          <p className="text-muted-foreground text-lg mb-8 leading-relaxed max-w-sm mx-auto">
-            Fast, secure mortgage applications with instant pre-approval and UAE Pass integration
+          <p className="text-muted-foreground text-base mb-8 leading-relaxed max-w-sm mx-auto">
+            Fast, secure mortgage applications with instant pre-approval
           </p>
           
           <Button 
             size="lg" 
             variant="gradient"
-            className="w-full h-16 text-lg font-bold group"
+            className="w-full h-14 text-base font-bold group"
             onClick={() => navigate("/login")}
           >
             Start Your Application
@@ -72,7 +75,7 @@ const Landing = () => {
         </div>
 
         {/* Features Grid */}
-        <div className="space-y-4 mb-12">
+        <div className="space-y-4 mb-10">
           {features.map((feature, index) => (
             <EnhancedCard 
               key={index} 
@@ -102,7 +105,7 @@ const Landing = () => {
         </div>
 
         {/* Benefits Section */}
-        <EnhancedCard variant="gradient" className="p-6 mb-12">
+        <EnhancedCard variant="gradient" className="p-5 mb-10">
           <h3 className="font-bold text-foreground mb-4 text-center">
             Why Choose Our Mortgage?
           </h3>

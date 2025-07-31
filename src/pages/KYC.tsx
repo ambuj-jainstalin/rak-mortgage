@@ -28,15 +28,14 @@ const KYC = () => {
       currentStep={currentPageStep} 
       totalSteps={totalSteps} 
       steps={steps}
+      showBack={true}
+      title="Identity Verification"
     >
       {/* Hero Section */}
       <div className="text-center mb-8">
-        <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-primary/20">
-          <Shield className="h-10 w-10 text-primary" />
+        <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-primary/20">
+          <Shield className="h-8 w-8 text-primary" />
         </div>
-        <h1 className="text-2xl font-bold text-foreground mb-2 tracking-tight">
-          Identity Verification
-        </h1>
         <p className="text-muted-foreground leading-relaxed max-w-sm mx-auto">
           Secure your application with bank-grade identity verification
         </p>

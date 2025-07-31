@@ -31,11 +31,11 @@ const ProgressBar = ({ currentStep, totalSteps, steps }: ProgressBarProps) => {
         {/* Progress Steps */}
         <div className="relative">
           {/* Background line */}
-          <div className="absolute top-6 left-0 right-0 h-0.5 bg-border"></div>
+          <div className="absolute top-5 left-0 right-0 h-0.5 bg-border"></div>
           
           {/* Progress line */}
           <div 
-            className="absolute top-6 left-0 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-700 ease-out"
+            className="absolute top-5 left-0 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-700 ease-out"
             style={{ 
               width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%` 
             }}
@@ -56,18 +56,18 @@ const ProgressBar = ({ currentStep, totalSteps, steps }: ProgressBarProps) => {
                 >
                   {/* Circle */}
                   <div className={`
-                    relative w-12 h-12 rounded-full border-2 flex items-center justify-center
+                    relative w-10 h-10 rounded-full border-2 flex items-center justify-center
                     transition-all duration-300 ease-out
                     ${isCompleted 
-                      ? 'bg-primary border-primary shadow-lg scale-100' 
+                      ? 'bg-primary border-primary shadow-md scale-100' 
                       : isCurrent 
-                        ? 'bg-primary border-primary shadow-xl scale-110' 
+                        ? 'bg-primary border-primary shadow-lg scale-105' 
                         : 'bg-background border-border hover:border-primary/30'
                     }
                   `}>
                     {isCompleted ? (
                       <svg 
-                        className="w-5 h-5 text-primary-foreground" 
+                        className="w-4 h-4 text-primary-foreground" 
                         fill="none" 
                         viewBox="0 0 24 24" 
                         stroke="currentColor"
@@ -81,7 +81,7 @@ const ProgressBar = ({ currentStep, totalSteps, steps }: ProgressBarProps) => {
                       </svg>
                     ) : (
                       <span className={`
-                        text-sm font-bold
+                        text-xs font-bold
                         ${isCurrent 
                           ? 'text-primary-foreground' 
                           : 'text-muted-foreground'
@@ -98,7 +98,7 @@ const ProgressBar = ({ currentStep, totalSteps, steps }: ProgressBarProps) => {
                   </div>
                   
                   {/* Step label */}
-                  <div className="mt-3 text-center max-w-[80px]">
+                  <div className="mt-2 text-center max-w-[70px]">
                     <p className={`
                       text-xs font-medium leading-tight
                       ${isCurrent 
