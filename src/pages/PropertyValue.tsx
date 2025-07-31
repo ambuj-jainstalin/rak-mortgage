@@ -11,7 +11,7 @@ import ProgressBar from "@/components/ProgressBar";
 const PropertyValue = () => {
   const navigate = useNavigate();
   const [propertyValue, setPropertyValue] = useState(2000000);
-  const [loanAmount, setLoanAmount] = useState(1500000);
+  const [loanAmount, setLoanAmount] = useState(1600000); // 80% of 2000000
   const [loanType, setLoanType] = useState("conventional");
   
   // Page progress tracking
@@ -28,16 +28,15 @@ const PropertyValue = () => {
   const monthlyPayment = (loanAmount * 0.004).toFixed(0); // Rough calculation
   const interestRate = 3.49;
 
-  // Ensure loan doesn't exceed property value
+  // Ensure loan doesn't exceed 80% LTV
   const handleLoanChange = (value: number) => {
     setLoanAmount(Math.min(value, propertyValue * 0.8)); // Max 80% LTV
   };
 
   const handlePropertyChange = (value: number) => {
     setPropertyValue(value);
-    if (loanAmount > value * 0.8) {
-      setLoanAmount(value * 0.8);
-    }
+    // Automatically maintain 80% LTV when property value changes
+    setLoanAmount(value * 0.8);
   };
 
   return (
