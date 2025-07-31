@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import ProgressBar from "@/components/ProgressBar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +14,25 @@ const Application = () => {
   const currentPageStep = 2; // Application is step 2 in the overall flow
   const totalSteps = 6; // Total main pages in the flow
   const steps = ["Login", "Application", "KYC", "Property", "Calculator", "Offer"];
+
+  // Predefined company list
+  const companyOptions = [
+    { value: "emirates", label: "Emirates" },
+    { value: "etisalat", label: "Etisalat" },
+    { value: "du", label: "du" },
+    { value: "adnoc", label: "ADNOC" },
+    { value: "emirates-nbd", label: "Emirates NBD" },
+    { value: "adcb", label: "Abu Dhabi Commercial Bank" },
+    { value: "mashreq", label: "Mashreq Bank" },
+    { value: "damac", label: "DAMAC Properties" },
+    { value: "emaar", label: "Emaar Properties" },
+    { value: "dnata", label: "dnata" },
+    { value: "flydubai", label: "flydubai" },
+    { value: "rak-bank", label: "RAK Bank" },
+    { value: "ajman-bank", label: "Ajman Bank" },
+    { value: "sharjah-islamic", label: "Sharjah Islamic Bank" },
+    { value: "uae-exchange", label: "UAE Exchange" },
+  ];
 
   const [formData, setFormData] = useState({
     monthlyIncome: "",
@@ -71,11 +91,14 @@ const Application = () => {
               </div>
               <div>
                 <Label className="text-foreground font-medium">Company Name</Label>
-                <Input 
-                  placeholder="Enter company name"
+                <Combobox
+                  options={companyOptions}
                   value={formData.companyName}
-                  onChange={(e) => setFormData({...formData, companyName: e.target.value})}
-                  className="mt-1 h-12"
+                  onValueChange={(value) => setFormData({...formData, companyName: value})}
+                  placeholder="Select or enter company name"
+                  searchPlaceholder="Search companies..."
+                  emptyText="No company found."
+                  className="mt-1 h-12 w-full"
                 />
               </div>
             </div>
