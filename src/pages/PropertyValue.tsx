@@ -3,17 +3,23 @@ import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import LoanSlider from "@/components/LoanSlider";
-import { Calculator, TrendingUp, Shield } from "lucide-react";
+import { Calculator, TrendingUp, Shield, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
+import { useApplicationContext } from "@/contexts/ApplicationContext";
+import { submitLeadToExternalAPI, createLeadDataFromApplication } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 const PropertyValue = () => {
   const navigate = useNavigate();
+  const { updateApplicationData, applicationData } = useApplicationContext();
+  const { toast } = useToast();
   const [propertyValue, setPropertyValue] = useState(2000000);
   const [loanAmount, setLoanAmount] = useState(1600000); // 80% of 2000000
   const [loanType, setLoanType] = useState("conventional");
   const [tenure, setTenure] = useState(25); // Default 25 years
+  const [isGeneratingOffer, setIsGeneratingOffer] = useState(false);
   
   // Page progress tracking
   const currentPageStep = 5;
@@ -179,10 +185,65 @@ const PropertyValue = () => {
           <Button 
             size="lg" 
             className="w-full h-14 font-semibold"
-            disabled={parseFloat(ltv) > 80}
-            onClick={() => parseFloat(ltv) <= 80 ? navigate("/offer") : null}
+            disabled={parseFloat(ltv) > 80 || isGeneratingOffer}
+            onClick={async () => {
+              if (parseFloat(ltv) <= 80) {
+                setIsGeneratingOffer(true);
+                try {
+                  // Save property and loan data to context
+                  updateApplicationData({
+                    propertyValue: propertyValue.toString(),
+                    loanAmount: loanAmount.toString(),
+                    loanType: "resale", // Hardcoded as per requirements
+                  });
+
+                  // Submit lead data to external API
+                  const leadData = createLeadDataFromApplication({
+                    ...applicationData,
+                    propertyValue: propertyValue.toString(),
+                    loanAmount: loanAmount.toString(),
+                    loanType: "resale",
+                  });
+
+                  const response = await submitLeadToExternalAPI(leadData);
+                  
+                  // Store the leadId from the response for later use
+                  if (response && response.data && response.data.leadId) {
+                    localStorage.setItem('leadId', response.data.leadId);
+                    console.log('Lead ID stored:', response.data.leadId);
+                  }
+                  
+                  toast({
+                    title: "Offer Generated!",
+                    description: "Your lead has been submitted and offer is ready.",
+                    variant: "default",
+                  });
+
+                  // Navigate to offer page
+                  navigate("/offer");
+                } catch (error) {
+                  console.error('Error generating offer:', error);
+                  toast({
+                    title: "Error",
+                    description: "Failed to generate offer. Please try again.",
+                    variant: "destructive",
+                  });
+                } finally {
+                  setIsGeneratingOffer(false);
+                }
+              }
+            }}
           >
-            {parseFloat(ltv) > 80 ? 'Reduce Loan Amount (Max 80% LTV)' : 'Get Real-Time Offer'}
+            {isGeneratingOffer ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Generating Offer...
+              </>
+            ) : parseFloat(ltv) > 80 ? (
+              'Reduce Loan Amount (Max 80% LTV)'
+            ) : (
+              'Get Real-Time Offer'
+            )}
           </Button>
         </div>
     </PageLayout>

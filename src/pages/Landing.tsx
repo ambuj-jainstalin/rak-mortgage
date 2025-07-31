@@ -45,7 +45,7 @@ const Landing = () => {
           {/* Trust Badge */}
           <div className="inline-flex items-center space-x-2 bg-primary/10 px-4 py-2 rounded-full mb-6 border border-primary/20">
             <Star className="h-4 w-4 text-primary fill-primary" />
-            <span className="text-primary text-sm font-medium">UAE's #1 Digital Mortgage</span>
+            <span className="text-primary text-sm font-medium">UAE's Fastest Digital Mortgage</span>
           </div>
 
           <h1 className="text-3xl font-bold text-foreground mb-4 leading-tight tracking-tight">
@@ -91,7 +91,7 @@ const Landing = () => {
                     <h3 className="font-bold text-foreground">
                       {feature.title}
                     </h3>
-                    <span className="bg-accent/20 text-accent text-xs px-2 py-0.5 rounded-full font-medium">
+                    <span className="bg-blue-100 text-blue-500 text-xs px-2 py-0.5 rounded-full font-medium">
                       {feature.highlight}
                     </span>
                   </div>
@@ -112,7 +112,7 @@ const Landing = () => {
           <div className="space-y-3">
             {benefits.map((benefit, index) => (
               <div key={index} className="flex items-center space-x-3">
-                <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
+                <CheckCircle className="h-5 w-5 text-blue-500 flex-shrink-0" />
                 <span className="text-foreground text-sm">{benefit}</span>
               </div>
             ))}
@@ -123,13 +123,13 @@ const Landing = () => {
         <div className="text-center space-y-4">
           <div className="flex justify-center items-center space-x-6 text-muted-foreground">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8  flex items-center justify-center">
                 <span className="text-primary text-xs font-bold">🏛️</span>
               </div>
               <span className="text-sm">CBUAE Licensed</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 flex items-center justify-center">
                 <span className="text-primary text-xs font-bold">🔐</span>
               </div>
               <span className="text-sm">UAE Pass Secured</span>
@@ -137,8 +137,7 @@ const Landing = () => {
           </div>
           
           <div className="text-xs text-muted-foreground space-y-1">
-            <p>🌟 4.9/5 rating from 10,000+ customers</p>
-            <p>⚡ Average approval time: 8 minutes</p>
+            <p>Powered by Perfios | Copyright @ 2025 Rakbank</p>
           </div>
         </div>
       </div>

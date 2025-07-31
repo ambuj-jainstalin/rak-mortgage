@@ -12,6 +12,7 @@ const Header = ({ showBack = false, title }: HeaderProps) => {
   const location = useLocation();
   
   const isLandingPage = location.pathname === "/";
+  const isLoginPage = location.pathname === "/login";
   
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/50">
@@ -32,15 +33,15 @@ const Header = ({ showBack = false, title }: HeaderProps) => {
             
             {/* Bank Logo */}
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-md flex items-center justify-center shadow-md">
-                <span className="text-white font-bold text-sm">🏦</span>
+              <div className="w-8 h-8 rounded-md flex items-center justify-center ">
+                <span className="text-white font-bold text-sm"><img src="public/RAKBANK.AE.svg" alt="RAKBANK Logo" className="w-6 h-6" /></span>
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-bold text-foreground leading-none">
-                  UAE Bank
+                <span className="text-sm font-bold text-primary leading-none">
+                  RAKBANK
                 </span>
                 <span className="text-xs text-muted-foreground leading-none">
-                  Digital Mortgage
+                  Digital Mortgage Loan
                 </span>
               </div>
             </div>
@@ -50,7 +51,7 @@ const Header = ({ showBack = false, title }: HeaderProps) => {
           {title && (
             <div className="flex-1 text-center">
               <h1 className="text-sm font-semibold text-foreground truncate max-w-[120px]">
-                {title}
+                
               </h1>
             </div>
           )}

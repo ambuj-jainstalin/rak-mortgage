@@ -5,10 +5,16 @@ import { CheckCircle, Download, Phone, Calendar, Home, Loader2 } from "lucide-re
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PageLayout from "@/components/PageLayout";
+import { useApplicationContext } from "@/contexts/ApplicationContext";
+import { updateLeadStatus } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 const Offer = () => {
   const navigate = useNavigate();
+  const { applicationData } = useApplicationContext();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
+  const [isAccepting, setIsAccepting] = useState(false);
   
   // Page progress tracking
   const currentPageStep = 6;
@@ -23,6 +29,44 @@ const Offer = () => {
     processingFee: "0",
     totalInterest: "763,600",
     validUntil: "15 Feb 2024"
+  };
+
+  const handleAcceptOffer = async () => {
+    setIsAccepting(true);
+    try {
+      // Get the leadId from localStorage
+      const leadId = localStorage.getItem('leadId');
+      
+      if (!leadId) {
+        toast({
+          title: "Error",
+          description: "Lead ID not found. Please try generating the offer again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Update lead status to PRE_APPROVED
+      await updateLeadStatus(leadId);
+      
+      toast({
+        title: "Offer Accepted!",
+        description: "Your offer has been accepted and status updated.",
+        variant: "default",
+      });
+
+      // Navigate to success page
+      navigate("/submit");
+    } catch (error) {
+      console.error('Error accepting offer:', error);
+      toast({
+        title: "Error",
+        description: "Failed to accept offer. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAccepting(false);
+    }
   };
 
   useEffect(() => {
@@ -175,11 +219,17 @@ const Offer = () => {
           <Button 
             size="lg" 
             className="w-full h-14 font-semibold"
-            onClick={() => {
-              navigate("/submit");
-            }}
+            onClick={handleAcceptOffer}
+            disabled={isAccepting}
           >
-            Accept Offer
+            {isAccepting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Accepting Offer...
+              </>
+            ) : (
+              "Accept Offer"
+            )}
           </Button>
           
           <div className="grid grid-cols-2 gap-3">

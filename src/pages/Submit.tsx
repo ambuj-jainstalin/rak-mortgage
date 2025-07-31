@@ -117,8 +117,8 @@ const Submit = () => {
         </div>
 
         <div className="mt-8 text-center text-sm text-muted-foreground">
-          <p>Need help? Call us at <span className="text-primary font-medium">800-MORTGAGE</span></p>
-          <p>Or email: <span className="text-primary font-medium">support@uaemortgage.ae</span></p>
+          <p>Need help? Call us at <span className="text-primary font-medium">800-RAKBANK</span></p>
+          <p>Or email: <span className="text-primary font-medium">support@rakbank.ae</span></p>
         </div>
     </PageLayout>
   );

@@ -7,9 +7,11 @@ import { Combobox } from "@/components/ui/combobox";
 import PageLayout from "@/components/PageLayout";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useApplicationContext } from "@/contexts/ApplicationContext";
 
 const Application = () => {
   const navigate = useNavigate();
+  const { applicationData, updateApplicationData } = useApplicationContext();
   const [currentStep, setCurrentStep] = useState(1);
   const currentPageStep = 2; // Application is step 2 in the overall flow
   const totalSteps = 6; // Total main pages in the flow
@@ -51,6 +53,21 @@ const Application = () => {
     if (currentStep < 4) { // 4 internal form steps
       setCurrentStep(currentStep + 1);
     } else {
+      // Log current form data
+      console.log('Form data being saved:', formData);
+      
+      // Save final form data to context before navigating
+      const dataToSave = {
+        income: formData.monthlyIncome,
+        employer: formData.companyName,
+        occupationType: formData.employmentType,
+        propertyLocation: formData.emirate, // Save emirate as property location
+        // Add other relevant fields as needed
+      };
+      
+      console.log('Data being saved to context:', dataToSave);
+      updateApplicationData(dataToSave);
+      
       // Navigate to KYC when all form steps are complete
       navigate("/kyc");
     }
@@ -86,7 +103,7 @@ const Application = () => {
                     <SelectValue placeholder="Select employment type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="employed">Employed</SelectItem>
+                    <SelectItem value="salaried">Salaried</SelectItem>
                     <SelectItem value="self-employed">Self Employed</SelectItem>
                     <SelectItem value="business-owner">Business Owner</SelectItem>
                   </SelectContent>

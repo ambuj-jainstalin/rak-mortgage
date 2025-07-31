@@ -20,9 +20,19 @@ const KYC = () => {
   const totalSteps = 6;
   const steps = ["Login", "Application", "KYC", "Property", "Calculator", "Offer"];
 
-  const handleIDCapture = (imageData: string) => {
-    setIdImageData(imageData);
-    setUploadedID(true);
+  const handleIDCapture = (imageData: string | { front: string; back: string }) => {
+    if (typeof imageData === 'string') {
+      // Single image (fallback or file upload)
+      setIdImageData(imageData);
+      setUploadedID(true);
+    } else {
+      // Front-back capture mode
+      setIdImageData(imageData.front); // Store front image as primary
+      // You can also store the back image if needed
+      console.log('Front image captured:', imageData.front);
+      console.log('Back image captured:', imageData.back);
+      setUploadedID(true);
+    }
   };
 
   const handleFaceCapture = (imageData: string) => {
@@ -51,8 +61,8 @@ const KYC = () => {
     >
       {/* Hero Section */}
       <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-primary/20">
-          <Shield className="h-8 w-8 text-primary" />
+        <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-primary/20">
+          <Shield className="h-6 w-6 text-primary" />
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-sm mx-auto">
           Secure your application with bank-grade identity verification
@@ -95,7 +105,7 @@ const KYC = () => {
             ) : (
               <div>
                 <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
-                  Upload a clear photo of both sides of your Emirates ID
+                  Capture both front and back sides of your Emirates ID
                 </p>
                 
                 <div className="grid grid-cols-2 gap-3">
@@ -213,6 +223,7 @@ const KYC = () => {
         onCapture={handleIDCapture}
         title="Capture Emirates ID"
         type="id"
+        captureMode="front-back"
       />
 
       <CameraCapture
