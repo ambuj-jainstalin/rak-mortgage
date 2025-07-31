@@ -59,19 +59,20 @@ export function Combobox({
 
   return (
     <div className="relative">
+      <Input
+        value={inputValue}
+        onChange={(e) => handleInputChange(e.target.value)}
+        placeholder={placeholder}
+        className={className}
+        onFocus={() => {
+          if (inputValue.length >= 3 && filteredOptions.length > 0) {
+            setOpen(true)
+          }
+        }}
+      />
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Input
-            value={inputValue}
-            onChange={(e) => handleInputChange(e.target.value)}
-            placeholder={placeholder}
-            className={className}
-            onFocus={() => {
-              if (inputValue.length >= 3 && filteredOptions.length > 0) {
-                setOpen(true)
-              }
-            }}
-          />
+          <div style={{ display: 'none' }} />
         </PopoverTrigger>
         <PopoverContent className="w-full p-0" align="start" style={{ width: 'var(--radix-popover-trigger-width)' }}>
           <Command>
