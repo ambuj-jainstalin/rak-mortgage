@@ -29,7 +29,6 @@ const KYC = () => {
       totalSteps={totalSteps} 
       steps={steps}
       showBack={true}
-      title="Identity Verification"
     >
       {/* Hero Section */}
       <div className="text-center mb-8">
