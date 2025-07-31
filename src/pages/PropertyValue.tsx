@@ -180,9 +180,9 @@ const PropertyValue = () => {
             size="lg" 
             className="w-full h-14 font-semibold"
             disabled={parseFloat(ltv) > 80}
-            onClick={() => parseFloat(ltv) <= 80 ? navigate("/submit") : null}
+            onClick={() => parseFloat(ltv) <= 80 ? navigate("/offer") : null}
           >
-            {parseFloat(ltv) > 80 ? 'Reduce Loan Amount (Max 80% LTV)' : 'Submit Application'}
+            {parseFloat(ltv) > 80 ? 'Reduce Loan Amount (Max 80% LTV)' : 'Get Real-Time Offer'}
           </Button>
         </div>
       </div>

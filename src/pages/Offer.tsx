@@ -127,8 +127,7 @@ const Offer = () => {
             size="lg" 
             className="w-full h-14 font-semibold"
             onClick={() => {
-              alert("Congratulations! Your mortgage application has been accepted. You will be contacted by our team within 24 hours.");
-              navigate("/");
+              navigate("/submit");
             }}
           >
             Accept Offer
