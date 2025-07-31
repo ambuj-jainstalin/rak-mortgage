@@ -13,6 +13,7 @@ const PropertyValue = () => {
   const [propertyValue, setPropertyValue] = useState(2000000);
   const [loanAmount, setLoanAmount] = useState(1600000); // 80% of 2000000
   const [loanType, setLoanType] = useState("conventional");
+  const [tenure, setTenure] = useState(25); // Default 25 years
   
   // Page progress tracking
   const currentPageStep = 5;
@@ -25,8 +26,12 @@ const PropertyValue = () => {
 
   const ltv = ((loanAmount / propertyValue) * 100).toFixed(1);
   const downPayment = propertyValue - loanAmount;
-  const monthlyPayment = (loanAmount * 0.004).toFixed(0); // Rough calculation
-  const interestRate = 3.49;
+  const interestRate = loanType === "islamic" ? 3.99 : 3.49;
+  
+  // Calculate monthly payment using loan formula: M = P * (r * (1 + r)^n) / ((1 + r)^n - 1)
+  const monthlyInterestRate = interestRate / 100 / 12;
+  const numberOfPayments = tenure * 12;
+  const monthlyPayment = loanAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
 
   // Ensure loan doesn't exceed 80% LTV
   const handleLoanChange = (value: number) => {
@@ -97,6 +102,19 @@ const PropertyValue = () => {
             />
           </Card>
 
+          {/* Tenure Slider */}
+          <Card className="p-6 shadow-sm border-border">
+            <LoanSlider
+              label="Loan Tenure"
+              value={tenure}
+              min={3}
+              max={30}
+              step={1}
+              onChange={setTenure}
+              format={(value) => `${value} years`}
+            />
+          </Card>
+
           {/* Loan Summary */}
           <Card className="p-6 shadow-sm border-border">
             <div className="flex items-center mb-4">
@@ -119,6 +137,12 @@ const PropertyValue = () => {
                 </span>
               </div>
               
+              
+              <div className="flex justify-between items-center py-2 border-b border-border">
+                <span className="text-muted-foreground">Tenure</span>
+                <span className="font-bold text-foreground">{tenure} years</span>
+              </div>
+              
               <div className="flex justify-between items-center py-2 border-b border-border">
                 <span className="text-muted-foreground">Interest Rate</span>
                 <span className="font-bold text-primary">{interestRate}% APR</span>
@@ -127,7 +151,7 @@ const PropertyValue = () => {
               <div className="flex justify-between items-center py-2">
                 <span className="text-muted-foreground">Est. Monthly Payment</span>
                 <span className="font-bold text-foreground text-lg">
-                  {parseInt(monthlyPayment).toLocaleString()} AED
+                  {Math.round(monthlyPayment).toLocaleString()} AED
                 </span>
               </div>
             </div>
