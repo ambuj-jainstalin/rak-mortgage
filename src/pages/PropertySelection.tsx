@@ -5,8 +5,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Building, Home } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const PropertySelection = () => {
+  const navigate = useNavigate();
   const [selectedBuilder, setSelectedBuilder] = useState("");
   const [selectedProperty, setSelectedProperty] = useState("");
   const [selectedType, setSelectedType] = useState("");
@@ -175,6 +177,7 @@ const PropertySelection = () => {
           size="lg" 
           className="w-full h-14 font-semibold"
           disabled={!selectedBuilder || !selectedProperty || !selectedType}
+          onClick={() => navigate("/property-value")}
         >
           Continue to Loan Calculator
         </Button>

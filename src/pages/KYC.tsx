@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Camera, Upload, CheckCircle, User } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const KYC = () => {
+  const navigate = useNavigate();
   const [uploadedID, setUploadedID] = useState(false);
   const [faceVerified, setFaceVerified] = useState(false);
 
@@ -137,7 +139,11 @@ const KYC = () => {
 
           {/* Continue Button */}
           {uploadedID && faceVerified && (
-            <Button size="lg" className="w-full h-14 font-semibold">
+            <Button 
+              size="lg" 
+              className="w-full h-14 font-semibold"
+              onClick={() => navigate("/property-selection")}
+            >
               Continue to Property Selection
             </Button>
           )}

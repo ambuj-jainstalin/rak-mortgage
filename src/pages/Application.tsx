@@ -5,8 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ProgressBar from "@/components/ProgressBar";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Application = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
   const steps = ["Personal Info", "Income Details", "Liabilities", "Address"];
@@ -24,6 +26,9 @@ const Application = () => {
   const handleNext = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
+    } else {
+      // Navigate to KYC when all steps are complete
+      navigate("/kyc");
     }
   };
 
@@ -189,7 +194,7 @@ const Application = () => {
         </Card>
 
         <div className="flex gap-3 mt-6">
-          {currentStep > 1 && (
+          {currentStep > 1 ? (
             <Button 
               variant="outline" 
               onClick={handlePrevious}
@@ -197,10 +202,18 @@ const Application = () => {
             >
               Previous
             </Button>
+          ) : (
+            <Button 
+              variant="outline" 
+              onClick={() => navigate("/login")}
+              className="flex-1 h-12 font-medium"
+            >
+              Back to Login
+            </Button>
           )}
           <Button 
             onClick={handleNext}
-            className={`h-12 font-semibold ${currentStep === 1 ? 'w-full' : 'flex-1'}`}
+            className="flex-1 h-12 font-semibold"
           >
             {currentStep === totalSteps ? 'Continue to KYC' : 'Next'}
           </Button>

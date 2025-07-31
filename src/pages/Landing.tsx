@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Shield, Clock, DollarSign, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
+  const navigate = useNavigate();
   const features = [
     {
       icon: DollarSign,
@@ -36,6 +38,7 @@ const Landing = () => {
           <Button 
             size="lg" 
             className="w-full h-14 text-lg font-semibold"
+            onClick={() => navigate("/login")}
           >
             Apply Now
             <ArrowRight className="ml-2 h-5 w-5" />

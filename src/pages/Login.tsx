@@ -4,8 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Shield, User, Calendar } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData] = useState({
     name: "Ahmed Al Mansouri",
@@ -98,7 +100,11 @@ const Login = () => {
                 </div>
               </div>
 
-              <Button size="lg" className="w-full h-12 font-semibold">
+              <Button 
+                size="lg" 
+                className="w-full h-12 font-semibold"
+                onClick={() => navigate("/application")}
+              >
                 Continue Application
               </Button>
             </div>

@@ -3,8 +3,10 @@ import { Card } from "@/components/ui/card";
 import LoanSlider from "@/components/LoanSlider";
 import { Calculator, TrendingUp, Shield } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const PropertyValue = () => {
+  const navigate = useNavigate();
   const [propertyValue, setPropertyValue] = useState(2000000);
   const [loanAmount, setLoanAmount] = useState(1500000);
 
@@ -127,6 +129,7 @@ const PropertyValue = () => {
             size="lg" 
             className="w-full h-14 font-semibold"
             disabled={parseFloat(ltv) > 80}
+            onClick={() => parseFloat(ltv) <= 80 ? navigate("/submit") : null}
           >
             {parseFloat(ltv) > 80 ? 'Reduce Loan Amount (Max 80% LTV)' : 'Submit Application'}
           </Button>

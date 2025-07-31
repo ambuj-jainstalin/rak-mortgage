@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Download, Phone, Calendar } from "lucide-react";
+import { CheckCircle, Download, Phone, Calendar, Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Offer = () => {
+  const navigate = useNavigate();
   const offerDetails = {
     loanAmount: "1,500,000",
     interestRate: "3.49",
@@ -109,7 +111,14 @@ const Offer = () => {
 
         {/* Action Buttons */}
         <div className="space-y-3">
-          <Button size="lg" className="w-full h-14 font-semibold">
+          <Button 
+            size="lg" 
+            className="w-full h-14 font-semibold"
+            onClick={() => {
+              alert("Congratulations! Your mortgage application has been accepted. You will be contacted by our team within 24 hours.");
+              navigate("/");
+            }}
+          >
             Accept Offer
           </Button>
           
@@ -139,6 +148,18 @@ const Offer = () => {
             <Calendar className="h-3 w-3" />
             <span>Offer expires on {offerDetails.validUntil}</span>
           </p>
+        </div>
+        
+        <div className="mt-4">
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="w-full h-12 font-medium"
+            onClick={() => navigate("/")}
+          >
+            <Home className="mr-2 h-4 w-4" />
+            Back to Home
+          </Button>
         </div>
       </div>
     </div>

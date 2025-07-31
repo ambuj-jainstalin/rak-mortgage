@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CheckCircle, Clock, FileText, Phone } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Submit = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-md">
@@ -90,9 +92,12 @@ const Submit = () => {
         </Card>
 
         <div className="space-y-3">
-          <Button size="lg" className="w-full h-14 font-semibold">
-            <FileText className="mr-2 h-5 w-5" />
-            Download Application Summary
+          <Button 
+            size="lg" 
+            className="w-full h-14 font-semibold"
+            onClick={() => navigate("/offer")}
+          >
+            View Your Offer
           </Button>
           
           <Button 
