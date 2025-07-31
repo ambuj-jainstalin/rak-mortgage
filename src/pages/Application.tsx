@@ -10,8 +10,9 @@ import { useNavigate } from "react-router-dom";
 const Application = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 4;
-  const steps = ["Personal Info", "Income Details", "Liabilities", "Address"];
+  const currentPageStep = 2; // Application is step 2 in the overall flow
+  const totalSteps = 6; // Total main pages in the flow
+  const steps = ["Login", "Application", "KYC", "Property", "Calculator", "Offer"];
 
   const [formData, setFormData] = useState({
     monthlyIncome: "",
@@ -24,10 +25,10 @@ const Application = () => {
   });
 
   const handleNext = () => {
-    if (currentStep < totalSteps) {
+    if (currentStep < 4) { // 4 internal form steps
       setCurrentStep(currentStep + 1);
     } else {
-      // Navigate to KYC when all steps are complete
+      // Navigate to KYC when all form steps are complete
       navigate("/kyc");
     }
   };
@@ -184,12 +185,29 @@ const Application = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-md">
         <ProgressBar 
-          currentStep={currentStep} 
+          currentStep={currentPageStep} 
           totalSteps={totalSteps} 
           steps={steps}
         />
 
         <Card className="p-6 shadow-sm border-border">
+          <div className="mb-4">
+            <h2 className="text-xl font-bold text-foreground mb-2">Application Form</h2>
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm font-medium text-muted-foreground">
+                Section {currentStep} of 4
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {Math.round((currentStep / 4) * 100)}% Complete
+              </span>
+            </div>
+            <div className="w-full bg-secondary h-1 rounded-none mb-4">
+              <div 
+                className="bg-accent h-1 rounded-none transition-all duration-300"
+                style={{ width: `${(currentStep / 4) * 100}%` }}
+              />
+            </div>
+          </div>
           {renderStepContent()}
         </Card>
 
@@ -215,7 +233,7 @@ const Application = () => {
             onClick={handleNext}
             className="flex-1 h-12 font-semibold"
           >
-            {currentStep === totalSteps ? 'Continue to KYC' : 'Next'}
+            {currentStep === 4 ? 'Continue to KYC' : 'Next'}
           </Button>
         </div>
       </div>

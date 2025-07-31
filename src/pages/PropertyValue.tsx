@@ -4,11 +4,17 @@ import LoanSlider from "@/components/LoanSlider";
 import { Calculator, TrendingUp, Shield } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ProgressBar from "@/components/ProgressBar";
 
 const PropertyValue = () => {
   const navigate = useNavigate();
   const [propertyValue, setPropertyValue] = useState(2000000);
   const [loanAmount, setLoanAmount] = useState(1500000);
+  
+  // Page progress tracking
+  const currentPageStep = 5;
+  const totalSteps = 6;
+  const steps = ["Login", "Application", "KYC", "Property", "Calculator", "Offer"];
 
   const formatCurrency = (value: number) => {
     return `${(value / 1000000).toFixed(1)}M AED`;
@@ -34,6 +40,11 @@ const PropertyValue = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-md">
+        <ProgressBar 
+          currentStep={currentPageStep} 
+          totalSteps={totalSteps} 
+          steps={steps}
+        />
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-foreground mb-2">
             Loan Calculator

@@ -3,11 +3,17 @@ import { Card } from "@/components/ui/card";
 import { Camera, Upload, CheckCircle, User } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ProgressBar from "@/components/ProgressBar";
 
 const KYC = () => {
   const navigate = useNavigate();
   const [uploadedID, setUploadedID] = useState(false);
   const [faceVerified, setFaceVerified] = useState(false);
+  
+  // Page progress tracking
+  const currentPageStep = 3;
+  const totalSteps = 6;
+  const steps = ["Login", "Application", "KYC", "Property", "Calculator", "Offer"];
 
   const handleIDUpload = () => {
     // Simulate ID upload
@@ -22,6 +28,11 @@ const KYC = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-md">
+        <ProgressBar 
+          currentStep={currentPageStep} 
+          totalSteps={totalSteps} 
+          steps={steps}
+        />
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-foreground mb-2">
             Identity Verification

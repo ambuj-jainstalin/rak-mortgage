@@ -3,9 +3,16 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Download, Phone, Calendar, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import ProgressBar from "@/components/ProgressBar";
 
 const Offer = () => {
   const navigate = useNavigate();
+  
+  // Page progress tracking
+  const currentPageStep = 6;
+  const totalSteps = 6;
+  const steps = ["Login", "Application", "KYC", "Property", "Calculator", "Offer"];
+  
   const offerDetails = {
     loanAmount: "1,500,000",
     interestRate: "3.49",
@@ -19,6 +26,11 @@ const Offer = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-md">
+        <ProgressBar 
+          currentStep={currentPageStep} 
+          totalSteps={totalSteps} 
+          steps={steps}
+        />
         <div className="text-center mb-8 pt-8">
           <div className="w-20 h-20 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="h-10 w-10 text-success" />
