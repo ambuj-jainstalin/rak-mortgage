@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import LoanSlider from "@/components/LoanSlider";
 import { Calculator, TrendingUp, Shield } from "lucide-react";
 import { useState } from "react";
@@ -10,6 +12,7 @@ const PropertyValue = () => {
   const navigate = useNavigate();
   const [propertyValue, setPropertyValue] = useState(2000000);
   const [loanAmount, setLoanAmount] = useState(1500000);
+  const [loanType, setLoanType] = useState("conventional");
   
   // Page progress tracking
   const currentPageStep = 5;
@@ -55,6 +58,20 @@ const PropertyValue = () => {
         </div>
 
         <div className="space-y-6">
+          {/* Loan Type Selection */}
+          <Card className="p-6 shadow-sm border-border">
+            <Label className="text-foreground font-medium mb-4 block">Loan Type</Label>
+            <RadioGroup value={loanType} onValueChange={setLoanType} className="flex space-x-6">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="conventional" id="conventional" />
+                <Label htmlFor="conventional" className="font-normal cursor-pointer">Conventional</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="islamic" id="islamic" />
+                <Label htmlFor="islamic" className="font-normal cursor-pointer">Islamic</Label>
+              </div>
+            </RadioGroup>
+          </Card>
           {/* Property Value Slider */}
           <Card className="p-6 shadow-sm border-border">
             <LoanSlider
