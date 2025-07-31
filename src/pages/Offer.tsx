@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Download, Phone, Calendar, Home } from "lucide-react";
+import { CheckCircle, Download, Phone, Calendar, Home, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import ProgressBar from "@/components/ProgressBar";
 
 const Offer = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
   
   // Page progress tracking
   const currentPageStep = 6;
@@ -23,6 +25,15 @@ const Offer = () => {
     validUntil: "15 Feb 2024"
   };
 
+  useEffect(() => {
+    // Simulate offer generation delay
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000); // 3 seconds loading
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-md">
@@ -31,6 +42,45 @@ const Offer = () => {
           totalSteps={totalSteps} 
           steps={steps}
         />
+        
+        {isLoading ? (
+          // Loading State
+          <div className="text-center pt-16">
+            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Loader2 className="h-10 w-10 text-primary animate-spin" />
+            </div>
+            
+            <h1 className="text-2xl font-bold text-foreground mb-2">
+              Generating Your Offer
+            </h1>
+            <p className="text-muted-foreground mb-8">
+              Our AI is analyzing your profile and calculating the best rates...
+            </p>
+            
+            <Card className="p-6 shadow-sm border-border mb-6">
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                  <span className="text-muted-foreground">Checking credit profile...</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                  <span className="text-muted-foreground">Analyzing property value...</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+                  <span className="text-muted-foreground">Calculating best rates...</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{animationDelay: '1.5s'}}></div>
+                  <span className="text-muted-foreground">Preparing your offer...</span>
+                </div>
+              </div>
+            </Card>
+          </div>
+        ) : (
+          // Actual Offer Content (with fade-in animation)
+          <div className="animate-fade-in">{/* ... keep existing code */}
         <div className="text-center mb-8 pt-8">
           <div className="w-20 h-20 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="h-10 w-10 text-success" />
@@ -172,6 +222,8 @@ const Offer = () => {
             Back to Home
           </Button>
         </div>
+          </div>
+        )}
       </div>
     </div>
   );
