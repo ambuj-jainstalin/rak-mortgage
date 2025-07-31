@@ -40,7 +40,10 @@ const Application = () => {
     companyName: "",
     existingLoans: "",
     creditCards: "",
-    currentAddress: "",
+    apartmentVilla: "",
+    buildingName: "",
+    streetLocation: "",
+    emirate: "",
     residenceType: ""
   });
 
@@ -171,13 +174,59 @@ const Application = () => {
             <h2 className="text-xl font-bold text-foreground">Current Address</h2>
             <div className="space-y-4">
               <div>
-                <Label className="text-foreground font-medium">Current Address</Label>
+                <Label className="text-foreground font-medium">Apartment/Villa No</Label>
                 <Input 
-                  placeholder="Enter your current address"
-                  value={formData.currentAddress}
-                  onChange={(e) => setFormData({...formData, currentAddress: e.target.value})}
+                  placeholder="Apartment/Villa number"
+                  value={formData.apartmentVilla}
+                  onChange={(e) => setFormData({...formData, apartmentVilla: e.target.value})}
                   className="mt-1 h-12"
                 />
+              </div>
+              <div>
+                <Label className="text-foreground font-medium">Building Name/Villa Name</Label>
+                <Input 
+                  placeholder="Building or Villa name"
+                  value={formData.buildingName}
+                  onChange={(e) => setFormData({...formData, buildingName: e.target.value})}
+                  className="mt-1 h-12"
+                />
+              </div>
+              <div>
+                <Label className="text-foreground font-medium">Street/Location</Label>
+                <Select value={formData.streetLocation} onValueChange={(value) => setFormData({...formData, streetLocation: value})}>
+                  <SelectTrigger className="mt-1 h-12">
+                    <SelectValue placeholder="Select street/location" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sheikh-zayed-road">Sheikh Zayed Road</SelectItem>
+                    <SelectItem value="jumeirah-beach-road">Jumeirah Beach Road</SelectItem>
+                    <SelectItem value="al-wasl-road">Al Wasl Road</SelectItem>
+                    <SelectItem value="palm-jumeirah">Palm Jumeirah</SelectItem>
+                    <SelectItem value="dubai-marina">Dubai Marina</SelectItem>
+                    <SelectItem value="downtown-dubai">Downtown Dubai</SelectItem>
+                    <SelectItem value="business-bay">Business Bay</SelectItem>
+                    <SelectItem value="deira">Deira</SelectItem>
+                    <SelectItem value="bur-dubai">Bur Dubai</SelectItem>
+                    <SelectItem value="jumeirah-lake-towers">Jumeirah Lake Towers</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-foreground font-medium">Emirate</Label>
+                <Select value={formData.emirate} onValueChange={(value) => setFormData({...formData, emirate: value})}>
+                  <SelectTrigger className="mt-1 h-12">
+                    <SelectValue placeholder="Select emirate" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="dubai">Dubai</SelectItem>
+                    <SelectItem value="abu-dhabi">Abu Dhabi</SelectItem>
+                    <SelectItem value="sharjah">Sharjah</SelectItem>
+                    <SelectItem value="ajman">Ajman</SelectItem>
+                    <SelectItem value="ras-al-khaimah">Ras Al Khaimah</SelectItem>
+                    <SelectItem value="fujairah">Fujairah</SelectItem>
+                    <SelectItem value="umm-al-quwain">Umm Al Quwain</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label className="text-foreground font-medium">Residence Type</Label>
