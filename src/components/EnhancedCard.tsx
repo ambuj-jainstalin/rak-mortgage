@@ -16,10 +16,10 @@ const EnhancedCard = ({
   animation = true 
 }: EnhancedCardProps) => {
   const variants = {
-    default: "bg-card border-border shadow-soft",
-    glass: "bg-card/80 backdrop-blur-sm border-border/50 shadow-glass",
-    elevated: "bg-card border-border shadow-elevated hover:shadow-lg transition-shadow duration-300",
-    gradient: "bg-gradient-to-br from-card via-card to-card/95 border-border shadow-elevated"
+    default: "bg-card border-border shadow-soft rounded-lg",
+    glass: "bg-card/80 backdrop-blur-sm border-border/50 shadow-glass rounded-lg",
+    elevated: "bg-card border-border shadow-elevated hover:shadow-lg transition-shadow duration-300 rounded-lg",
+    gradient: "bg-gradient-to-br from-card via-card to-card/95 border-border shadow-elevated rounded-lg"
   };
 
   return (

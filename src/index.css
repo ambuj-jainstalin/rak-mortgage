@@ -51,7 +51,7 @@ All colors MUST be HSL.
     --transition-smooth: all 0.2s ease-in-out;
     --transition-spring: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
-    --radius: 0rem;
+    --radius: 0.375rem;
 
     --sidebar-background: 0 0% 98%;
 

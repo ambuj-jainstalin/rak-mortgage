@@ -31,11 +31,11 @@ const ProgressBar = ({ currentStep, totalSteps, steps }: ProgressBarProps) => {
         {/* Progress Steps */}
         <div className="relative">
           {/* Background line */}
-          <div className="absolute top-5 left-0 right-0 h-0.5 bg-border"></div>
+          <div className="absolute top-4 left-0 right-0 h-0.5 bg-border"></div>
           
           {/* Progress line */}
           <div 
-            className="absolute top-5 left-0 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-700 ease-out"
+            className="absolute top-4 left-0 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-700 ease-out"
             style={{ 
               width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%` 
             }}
@@ -56,7 +56,7 @@ const ProgressBar = ({ currentStep, totalSteps, steps }: ProgressBarProps) => {
                 >
                   {/* Circle */}
                   <div className={`
-                    relative w-10 h-10 rounded-full border-2 flex items-center justify-center
+                    relative w-8 h-8 rounded-full border-2 flex items-center justify-center
                     transition-all duration-300 ease-out
                     ${isCompleted 
                       ? 'bg-primary border-primary shadow-md scale-100' 
@@ -67,7 +67,7 @@ const ProgressBar = ({ currentStep, totalSteps, steps }: ProgressBarProps) => {
                   `}>
                     {isCompleted ? (
                       <svg 
-                        className="w-4 h-4 text-primary-foreground" 
+                        className="w-3.5 h-3.5 text-primary-foreground" 
                         fill="none" 
                         viewBox="0 0 24 24" 
                         stroke="currentColor"
@@ -98,7 +98,7 @@ const ProgressBar = ({ currentStep, totalSteps, steps }: ProgressBarProps) => {
                   </div>
                   
                   {/* Step label */}
-                  <div className="mt-2 text-center max-w-[70px]">
+                  <div className="mt-2 text-center max-w-[60px]">
                     <p className={`
                       text-xs font-medium leading-tight
                       ${isCurrent 

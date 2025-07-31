@@ -32,7 +32,7 @@ const Header = ({ showBack = false, title }: HeaderProps) => {
             
             {/* Bank Logo */}
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center shadow-md">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-md flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-sm">🏦</span>
               </div>
               <div className="flex flex-col">
