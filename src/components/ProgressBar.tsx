@@ -6,7 +6,7 @@ interface ProgressBarProps {
 
 const ProgressBar = ({ currentStep, totalSteps, steps }: ProgressBarProps) => {
   return (
-    <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/50 pb-6 mb-8">
+    <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border/50 pb-6 mb-8">
       <div className="pt-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
