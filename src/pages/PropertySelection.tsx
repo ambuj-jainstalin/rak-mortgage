@@ -62,10 +62,10 @@ const PropertySelection = () => {
             {/* Purchase Type Toggle */}
             <div>
               <Label className="text-foreground font-medium mb-3 block">Purchase Type</Label>
-              <div className="flex border border-border rounded-none overflow-hidden">
+              <div className="grid grid-cols-3 border border-border rounded-none overflow-hidden">
                 <button
                   onClick={() => setPurchaseType("resale")}
-                  className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${
+                  className={`py-3 px-4 text-center font-medium transition-colors ${
                     purchaseType === "resale" 
                       ? "bg-primary text-primary-foreground" 
                       : "bg-background text-foreground hover:bg-muted"
@@ -75,13 +75,23 @@ const PropertySelection = () => {
                 </button>
                 <button
                   onClick={() => setPurchaseType("fresh")}
-                  className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${
+                  className={`py-3 px-4 text-center font-medium transition-colors ${
                     purchaseType === "fresh" 
                       ? "bg-primary text-primary-foreground" 
                       : "bg-background text-foreground hover:bg-muted"
                   }`}
                 >
-                  Fresh/Off-Plan
+                  Fresh
+                </button>
+                <button
+                  onClick={() => setPurchaseType("offplan")}
+                  className={`py-3 px-4 text-center font-medium transition-colors ${
+                    purchaseType === "offplan" 
+                      ? "bg-primary text-primary-foreground" 
+                      : "bg-background text-foreground hover:bg-muted"
+                  }`}
+                >
+                  Offplan
                 </button>
               </div>
             </div>
