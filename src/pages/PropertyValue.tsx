@@ -6,7 +6,7 @@ import LoanSlider from "@/components/LoanSlider";
 import { Calculator, TrendingUp, Shield } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ProgressBar from "@/components/ProgressBar";
+import PageLayout from "@/components/PageLayout";
 
 const PropertyValue = () => {
   const navigate = useNavigate();
@@ -45,21 +45,21 @@ const PropertyValue = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-md">
-        <ProgressBar 
-          currentStep={currentPageStep} 
-          totalSteps={totalSteps} 
-          steps={steps}
-        />
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-foreground mb-2">
-            Loan Calculator
-          </h1>
-          <p className="text-muted-foreground">
-            Adjust the values to see your loan details
-          </p>
-        </div>
+    <PageLayout
+      currentStep={currentPageStep}
+      totalSteps={totalSteps}
+      steps={steps}
+      showBack={true}
+      title="Calculator"
+    >
+      <div className="text-center mb-8">
+        <h1 className="text-2xl font-bold text-foreground mb-2">
+          Loan Calculator
+        </h1>
+        <p className="text-muted-foreground">
+          Adjust the values to see your loan details
+        </p>
+      </div>
 
         <div className="space-y-6">
           {/* Loan Type Selection */}
@@ -185,8 +185,7 @@ const PropertyValue = () => {
             {parseFloat(ltv) > 80 ? 'Reduce Loan Amount (Max 80% LTV)' : 'Get Real-Time Offer'}
           </Button>
         </div>
-      </div>
-    </div>
+    </PageLayout>
   );
 };
 

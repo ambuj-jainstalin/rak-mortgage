@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Download, Phone, Calendar, Home, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import ProgressBar from "@/components/ProgressBar";
+import PageLayout from "@/components/PageLayout";
 
 const Offer = () => {
   const navigate = useNavigate();
@@ -35,17 +35,16 @@ const Offer = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-md">
-        <ProgressBar 
-          currentStep={currentPageStep} 
-          totalSteps={totalSteps} 
-          steps={steps}
-        />
-        
-        {isLoading ? (
-          // Loading State
-          <div className="text-center pt-16">
+    <PageLayout
+      currentStep={currentPageStep}
+      totalSteps={totalSteps}
+      steps={steps}
+      showBack={true}
+      title="Offer"
+    >
+      {isLoading ? (
+        // Loading State
+        <div className="text-center pt-16">
             <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
               <Loader2 className="h-10 w-10 text-primary animate-spin" />
             </div>
@@ -224,8 +223,7 @@ const Offer = () => {
         </div>
           </div>
         )}
-      </div>
-    </div>
+    </PageLayout>
   );
 };
 

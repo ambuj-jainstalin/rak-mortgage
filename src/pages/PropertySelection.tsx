@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Building, Home } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ProgressBar from "@/components/ProgressBar";
+import PageLayout from "@/components/PageLayout";
 
 const PropertySelection = () => {
   const navigate = useNavigate();
@@ -41,21 +41,21 @@ const PropertySelection = () => {
   const propertyTypes = ["Apartment", "Villa", "Townhouse", "Penthouse"];
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-md">
-        <ProgressBar 
-          currentStep={currentPageStep} 
-          totalSteps={totalSteps} 
-          steps={steps}
-        />
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-foreground mb-2">
-            Property Selection
-          </h1>
-          <p className="text-muted-foreground">
-            Choose your dream property details
-          </p>
-        </div>
+    <PageLayout
+      currentStep={currentPageStep}
+      totalSteps={totalSteps}
+      steps={steps}
+      showBack={true}
+      title="Property"
+    >
+      <div className="text-center mb-8">
+        <h1 className="text-2xl font-bold text-foreground mb-2">
+          Property Selection
+        </h1>
+        <p className="text-muted-foreground">
+          Choose your dream property details
+        </p>
+      </div>
 
         <Card className="p-6 shadow-sm border-border mb-6">
           <div className="space-y-6">
@@ -202,8 +202,7 @@ const PropertySelection = () => {
         >
           Continue to Loan Calculator
         </Button>
-      </div>
-    </div>
+    </PageLayout>
   );
 };
 

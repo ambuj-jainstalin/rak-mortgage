@@ -2,24 +2,30 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CheckCircle, Clock, FileText, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import PageLayout from "@/components/PageLayout";
 
 const Submit = () => {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-md">
-        <div className="text-center mb-8 pt-8">
-          <div className="w-20 h-20 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="h-10 w-10 text-success" />
-          </div>
-          
-          <h1 className="text-2xl font-bold text-foreground mb-2">
-            Application Submitted!
-          </h1>
-          <p className="text-muted-foreground">
-            Your mortgage offer has been accepted successfully
-          </p>
+    <PageLayout
+      currentStep={6}
+      totalSteps={6}
+      steps={["Login", "Application", "KYC", "Property", "Calculator", "Offer"]}
+      showBack={false}
+      title="Success"
+    >
+      <div className="text-center mb-8 pt-8">
+        <div className="w-20 h-20 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
+          <CheckCircle className="h-10 w-10 text-success" />
         </div>
+        
+        <h1 className="text-2xl font-bold text-foreground mb-2">
+          Application Submitted!
+        </h1>
+        <p className="text-muted-foreground">
+          Your mortgage offer has been accepted successfully
+        </p>
+      </div>
 
         <Card className="p-6 shadow-sm border-border mb-6">
           <h3 className="font-semibold text-foreground mb-4">Application Details</h3>
@@ -114,8 +120,7 @@ const Submit = () => {
           <p>Need help? Call us at <span className="text-primary font-medium">800-MORTGAGE</span></p>
           <p>Or email: <span className="text-primary font-medium">support@uaemortgage.ae</span></p>
         </div>
-      </div>
-    </div>
+    </PageLayout>
   );
 };
 

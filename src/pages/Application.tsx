@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Combobox } from "@/components/ui/combobox";
-import ProgressBar from "@/components/ProgressBar";
+import PageLayout from "@/components/PageLayout";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -252,62 +252,69 @@ const Application = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-md">
-        <ProgressBar 
-          currentStep={currentPageStep} 
-          totalSteps={totalSteps} 
-          steps={steps}
-        />
-
-        <Card className="p-6 shadow-sm border-border">
-          <div className="mb-4">
-            <h2 className="text-xl font-bold text-foreground mb-2">Application Form</h2>
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm font-medium text-muted-foreground">
-                Section {currentStep} of 4
-              </span>
-              <span className="text-sm text-muted-foreground">
-                {Math.round((currentStep / 4) * 100)}% Complete
-              </span>
-            </div>
-            <div className="w-full bg-secondary h-1 rounded-none mb-4">
-              <div 
-                className="bg-accent h-1 rounded-none transition-all duration-300"
-                style={{ width: `${(currentStep / 4) * 100}%` }}
-              />
-            </div>
-          </div>
-          {renderStepContent()}
-        </Card>
-
-        <div className="flex gap-3 mt-6">
-          {currentStep > 1 ? (
-            <Button 
-              variant="outline" 
-              onClick={handlePrevious}
-              className="flex-1 h-12 font-medium"
-            >
-              Previous
-            </Button>
-          ) : (
-            <Button 
-              variant="outline" 
-              onClick={() => navigate("/login")}
-              className="flex-1 h-12 font-medium"
-            >
-              Back to Login
-            </Button>
-          )}
-          <Button 
-            onClick={handleNext}
-            className="flex-1 h-12 font-semibold"
-          >
-            {currentStep === 4 ? 'Continue to KYC' : 'Next'}
-          </Button>
-        </div>
+    <PageLayout
+      currentStep={currentPageStep}
+      totalSteps={totalSteps}
+      steps={steps}
+      showBack={true}
+      title="Application"
+    >
+      <div className="text-center mb-8">
+        <h1 className="text-2xl font-bold text-foreground mb-2">
+          Mortgage Application
+        </h1>
+        <p className="text-muted-foreground">
+          Please fill in your personal and financial details
+        </p>
       </div>
-    </div>
+
+      <Card className="p-6 shadow-sm border-border">
+        <div className="mb-4">
+          <h2 className="text-xl font-bold text-foreground mb-2">Application Form</h2>
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-sm font-medium text-muted-foreground">
+              Section {currentStep} of 4
+            </span>
+            <span className="text-sm text-muted-foreground">
+              {Math.round((currentStep / 4) * 100)}% Complete
+            </span>
+          </div>
+          <div className="w-full bg-secondary h-1 rounded-none mb-4">
+            <div 
+              className="bg-accent h-1 rounded-none transition-all duration-300"
+              style={{ width: `${(currentStep / 4) * 100}%` }}
+            />
+          </div>
+        </div>
+        {renderStepContent()}
+      </Card>
+
+      <div className="flex gap-3 mt-6">
+        {currentStep > 1 ? (
+          <Button 
+            variant="outline" 
+            onClick={handlePrevious}
+            className="flex-1 h-12 font-medium"
+          >
+            Previous
+          </Button>
+        ) : (
+          <Button 
+            variant="outline" 
+            onClick={() => navigate("/login")}
+            className="flex-1 h-12 font-medium"
+          >
+            Back to Login
+          </Button>
+        )}
+        <Button 
+          onClick={handleNext}
+          className="flex-1 h-12 font-semibold"
+        >
+          {currentStep === 4 ? 'Continue to KYC' : 'Next'}
+        </Button>
+      </div>
+    </PageLayout>
   );
 };
 
