@@ -17,6 +17,10 @@ const PropertyValue = () => {
   const { toast } = useToast();
   const [propertyValue, setPropertyValue] = useState(2000000);
   const [loanAmount, setLoanAmount] = useState(1600000); // 80% of 2000000
+  const [relationshipType, setRelationshipType] = useState("personal");
+  const [rateType, setRateType] = useState("fixed");
+  const [firstMortgage, setFirstMortgage] = useState("yes");
+  const [productType, setProductType] = useState("standard");
   const [loanType, setLoanType] = useState("conventional");
   const [tenure, setTenure] = useState(25); // Default 25 years
   const [isGeneratingOffer, setIsGeneratingOffer] = useState(false);
@@ -24,30 +28,59 @@ const PropertyValue = () => {
   // Page progress tracking
   const currentPageStep = 5;
   const totalSteps = 6;
-  const steps = ["Login", "Application", "KYC", "Property", "Calculator", "Offer"];
+  const steps = ["Login", "Application", "KYC", "Property", "Loan", "Offer"];
 
   const formatCurrency = (value: number) => {
     return `${(value / 1000000).toFixed(1)}M AED`;
   };
 
+  // Calculate LTV based on first mortgage selection
+  const maxLTV = firstMortgage === "yes" ? 0.8 : 0.6; // 80% for first mortgage, 60% for subsequent
   const ltv = ((loanAmount / propertyValue) * 100).toFixed(1);
   const downPayment = propertyValue - loanAmount;
-  const interestRate = loanType === "islamic" ? 3.99 : 3.49;
+  
+  // Calculate interest rate based on loan type and rate type
+  let baseRate = loanType === "islamic" ? 3.99 : 3.49;
+  let interestRate = baseRate;
+  
+  if (rateType === "floating") {
+    // Floating rates are typically lower than fixed rates
+    interestRate = baseRate - 0.5; // 0.5% lower for floating
+  }
+  
+  // Adjust rate based on relationship type
+  if (relationshipType === "elite") {
+    interestRate -= 0.25; // 0.25% discount for elite
+  } else if (relationshipType === "private") {
+    interestRate -= 0.5; // 0.5% discount for private
+  }
+  
+  // Adjust rate based on product type
+  if (productType === "home-in-one") {
+    interestRate += 0.25; // 0.25% premium for Home in One product
+  }
   
   // Calculate monthly payment using loan formula: M = P * (r * (1 + r)^n) / ((1 + r)^n - 1)
   const monthlyInterestRate = interestRate / 100 / 12;
   const numberOfPayments = tenure * 12;
   const monthlyPayment = loanAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
 
-  // Ensure loan doesn't exceed 80% LTV
+  // Ensure loan doesn't exceed max LTV based on first mortgage selection
   const handleLoanChange = (value: number) => {
-    setLoanAmount(Math.min(value, propertyValue * 0.8)); // Max 80% LTV
+    setLoanAmount(Math.min(value, propertyValue * maxLTV)); // Max LTV based on first mortgage
   };
 
   const handlePropertyChange = (value: number) => {
     setPropertyValue(value);
-    // Automatically maintain 80% LTV when property value changes
-    setLoanAmount(value * 0.8);
+    // Automatically maintain max LTV when property value changes
+    setLoanAmount(value * maxLTV);
+  };
+
+  const handleFirstMortgageChange = (value: string) => {
+    setFirstMortgage(value);
+    // Recalculate loan amount based on new LTV when first mortgage selection changes
+    const newMaxLTV = value === "yes" ? 0.8 : 0.6;
+    setLoanAmount(propertyValue * newMaxLTV);
   };
 
   return (
@@ -60,7 +93,7 @@ const PropertyValue = () => {
     >
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold text-foreground mb-2">
-          Loan Calculator
+          Loan Eligibility
         </h1>
         <p className="text-muted-foreground">
           Adjust the values to see your loan details
@@ -68,10 +101,51 @@ const PropertyValue = () => {
       </div>
 
         <div className="space-y-6">
+          {/* Relationship Type Selection */}
+          <Card className="p-4 shadow-sm border-border">
+            <Label className="text-foreground font-medium mb-4 block">Relationship Type</Label>
+            <RadioGroup value={relationshipType} onValueChange={setRelationshipType} className="flex space-x-4">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="personal" id="personal" />
+                <Label htmlFor="personal" className="font-normal cursor-pointer">Personal</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="elite" id="elite" />
+                <Label htmlFor="elite" className="font-normal cursor-pointer">Elite</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="private" id="private" />
+                <Label htmlFor="private" className="font-normal cursor-pointer">Private</Label>
+              </div>
+            </RadioGroup>
+          </Card>
+
+          {/* Product Type Selection */}
+          <Card className="p-4 shadow-sm border-border">
+            <Label className="text-foreground font-medium mb-4 block">Product Type</Label>
+            <RadioGroup value={productType} onValueChange={setProductType} className="flex space-x-4">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="standard" id="standard" />
+                <Label htmlFor="standard" className="font-normal cursor-pointer">Standard</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="home-in-one" id="home-in-one" />
+                <Label htmlFor="home-in-one" className="font-normal cursor-pointer">Home in One</Label>
+              </div>
+            </RadioGroup>
+            <div className="mt-3 text-sm text-muted-foreground">
+              {productType === "standard" ? (
+                <span>Standard mortgage product with competitive rates</span>
+              ) : (
+                <span>Home in One: Combined mortgage and current account (0.25% rate premium)</span>
+              )}
+            </div>
+          </Card>
+
           {/* Loan Type Selection */}
-          <Card className="p-6 shadow-sm border-border">
+          <Card className="p-4 shadow-sm border-border">
             <Label className="text-foreground font-medium mb-4 block">Loan Type</Label>
-            <RadioGroup value={loanType} onValueChange={setLoanType} className="flex space-x-6">
+            <RadioGroup value={loanType} onValueChange={setLoanType} className="flex space-x-4">
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="conventional" id="conventional" />
                 <Label htmlFor="conventional" className="font-normal cursor-pointer">Conventional</Label>
@@ -82,6 +156,44 @@ const PropertyValue = () => {
               </div>
             </RadioGroup>
           </Card>
+
+          {/* Rate Type Selection */}
+          <Card className="p-4 shadow-sm border-border">
+            <Label className="text-foreground font-medium mb-4 block">Rate Type</Label>
+            <RadioGroup value={rateType} onValueChange={setRateType} className="flex space-x-4">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="fixed" id="fixed" />
+                <Label htmlFor="fixed" className="font-normal cursor-pointer">Fixed</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="floating" id="floating" />
+                <Label htmlFor="floating" className="font-normal cursor-pointer">Floating</Label>
+              </div>
+            </RadioGroup>
+            <div className="mt-3 text-sm text-muted-foreground">
+              {rateType === "fixed" ? (
+                <span>Fixed rate: {interestRate.toFixed(2)}% APR</span>
+              ) : (
+                <span>Floating rate: {interestRate.toFixed(2)}% APR (0.5% lower than fixed)</span>
+              )}
+            </div>
+          </Card>
+
+          {/* First Mortgage Selection */}
+          <Card className="p-4 shadow-sm border-border">
+            <Label className="text-foreground font-medium mb-4 block">First Mortgage?</Label>
+            <RadioGroup value={firstMortgage} onValueChange={handleFirstMortgageChange} className="flex space-x-4">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="yes" id="first-mortgage-yes" />
+                <Label htmlFor="first-mortgage-yes" className="font-normal cursor-pointer">Yes</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="no" id="first-mortgage-no" />
+                <Label htmlFor="first-mortgage-no" className="font-normal cursor-pointer">No</Label>
+              </div>
+            </RadioGroup>
+          </Card>
+
           {/* Property Value Slider */}
           <Card className="p-6 shadow-sm border-border">
             <LoanSlider
@@ -101,7 +213,7 @@ const PropertyValue = () => {
               label="Requested Loan Amount"
               value={loanAmount}
               min={100000}
-              max={Math.min(8000000, propertyValue * 0.8)}
+              max={Math.min(8000000, propertyValue * maxLTV)}
               step={25000}
               onChange={handleLoanChange}
               format={formatCurrency}
@@ -114,7 +226,7 @@ const PropertyValue = () => {
               label="Loan Tenure"
               value={tenure}
               min={3}
-              max={30}
+              max={25}
               step={1}
               onChange={setTenure}
               format={(value) => `${value} years`}
@@ -131,7 +243,7 @@ const PropertyValue = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center py-2 border-b border-border">
                 <span className="text-muted-foreground">Loan-to-Value (LTV)</span>
-                <span className={`font-bold ${parseFloat(ltv) <= 80 ? 'text-success' : 'text-destructive'}`}>
+                <span className={`font-bold ${parseFloat(ltv) <= (maxLTV * 100) ? 'text-success' : 'text-destructive'}`}>
                   {ltv}%
                 </span>
               </div>
@@ -185,15 +297,18 @@ const PropertyValue = () => {
           <Button 
             size="lg" 
             className="w-full h-14 font-semibold"
-            disabled={parseFloat(ltv) > 80 || isGeneratingOffer}
+            disabled={parseFloat(ltv) > (maxLTV * 100) || isGeneratingOffer}
             onClick={async () => {
-              if (parseFloat(ltv) <= 80) {
+                              if (parseFloat(ltv) <= (maxLTV * 100)) {
                 setIsGeneratingOffer(true);
                 try {
                   // Save property and loan data to context
                   updateApplicationData({
                     propertyValue: propertyValue.toString(),
                     loanAmount: loanAmount.toString(),
+                    relationshipType: relationshipType,
+                    rateType: rateType,
+                    productType: productType,
                     loanType: "resale", // Hardcoded as per requirements
                   });
 
@@ -202,6 +317,9 @@ const PropertyValue = () => {
                     ...applicationData,
                     propertyValue: propertyValue.toString(),
                     loanAmount: loanAmount.toString(),
+                    relationshipType: relationshipType,
+                    rateType: rateType,
+                    productType: productType,
                     loanType: "resale",
                   });
 

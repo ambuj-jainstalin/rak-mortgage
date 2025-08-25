@@ -17,6 +17,9 @@ export interface ApplicationData {
   previousMortgage: string;
   propertyLocation: string;
   propertyType: string;
+  relationshipType: string;
+  rateType: string;
+  productType: string;
   loanType: string;
   loanAmount: string;
   outstandingAmount: string;
@@ -46,6 +49,9 @@ const defaultApplicationData: ApplicationData = {
   previousMortgage: "no",
   propertyLocation: "Dubai",
   propertyType: "apartment",
+  relationshipType: "personal",
+  rateType: "fixed",
+  productType: "standard",
   loanType: "purchase",
   loanAmount: "",
   outstandingAmount: "0",

@@ -19,7 +19,7 @@ const Offer = () => {
   // Page progress tracking
   const currentPageStep = 6;
   const totalSteps = 6;
-  const steps = ["Login", "Application", "KYC", "Property", "Calculator", "Offer"];
+  const steps = ["Login", "Application", "KYC", "Property", "Loan", "Offer"];
   
   const offerDetails = {
     loanAmount: "1,500,000",
@@ -193,7 +193,7 @@ const Offer = () => {
 
         {/* Benefits */}
         <Card className="p-6 shadow-sm border-border mb-8">
-          <h3 className="font-semibold text-foreground mb-4">Your Benefits</h3>
+          <h3 className="font-semibold text-foreground mb-4">Fees and Charges</h3>
           <div className="space-y-2">
             <div className="flex items-center space-x-3">
               <CheckCircle className="h-4 w-4 text-success" />
@@ -201,16 +201,25 @@ const Offer = () => {
             </div>
             <div className="flex items-center space-x-3">
               <CheckCircle className="h-4 w-4 text-success" />
-              <span className="text-sm text-muted-foreground">Free property valuation</span>
+              <span className="text-sm text-muted-foreground">Valuation fee : AED 3150(inc VAT)</span>
             </div>
+            <div className="flex items-center space-x-3">
+              <CheckCircle className="h-4 w-4 text-success" />
+              <span className="text-sm text-muted-foreground">Property Insurance : 0.00291% / month</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <CheckCircle className="h-4 w-4 text-success" />
+              <span className="text-sm text-muted-foreground">Life Insurance : 0.0150 % / month</span>
+            </div>
+
             <div className="flex items-center space-x-3">
               <CheckCircle className="h-4 w-4 text-success" />
               <span className="text-sm text-muted-foreground">Flexible repayment options</span>
             </div>
-            <div className="flex items-center space-x-3">
+            {/* <div className="flex items-center space-x-3">
               <CheckCircle className="h-4 w-4 text-success" />
               <span className="text-sm text-muted-foreground">24/7 customer support</span>
-            </div>
+            </div> */}
           </div>
         </Card>
 

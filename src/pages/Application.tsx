@@ -4,10 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Combobox } from "@/components/ui/combobox";
+import { Checkbox } from "@/components/ui/checkbox";
 import PageLayout from "@/components/PageLayout";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApplicationContext } from "@/contexts/ApplicationContext";
+import { Edit2, Check, X } from "lucide-react";
 
 const Application = () => {
   const navigate = useNavigate();
@@ -15,12 +17,13 @@ const Application = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const currentPageStep = 2; // Application is step 2 in the overall flow
   const totalSteps = 6; // Total main pages in the flow
-  const steps = ["Login", "Application", "KYC", "Property", "Calculator", "Offer"];
+  const steps = ["Login", "Application", "KYC", "Property", "Loan", "Offer"];
 
   // Predefined company list
   const companyOptions = [
     { value: "emirates", label: "Emirates" },
     { value: "etisalat", label: "Etisalat" },
+    { value: "perfios", label: "Perfios Software Solutions" },
     { value: "du", label: "du" },
     { value: "adnoc", label: "ADNOC" },
     { value: "emirates-nbd", label: "Emirates NBD" },
@@ -37,17 +40,39 @@ const Application = () => {
   ];
 
   const [formData, setFormData] = useState({
-    monthlyIncome: "",
-    employmentType: "",
-    companyName: "",
-    existingLoans: "",
-    creditCards: "",
+    monthlyIncome: "40000",
+    employmentType: "salaried",
+    companyName: "Perfios Software Solutions",
+    existingLoans: "2500",
+    creditCards: "15000",
     apartmentVilla: "",
     buildingName: "",
     streetLocation: "",
     emirate: "",
     residenceType: ""
   });
+
+  // Pre-filled existing liabilities data
+  const [existingLiabilities, setExistingLiabilities] = useState({
+    personalLoan: {
+      loanAmount: "50000",
+      outstanding: "35000",
+      emi: "2500"
+    },
+    creditCard: {
+      limit: "15000"
+    }
+  });
+
+  // State for liability selections
+  const [liabilitySelections, setLiabilitySelections] = useState({
+    personalLoan: true,
+    creditCard: true
+  });
+
+  // State for editing credit limit
+  const [isEditingCreditLimit, setIsEditingCreditLimit] = useState(false);
+  const [editingCreditLimit, setEditingCreditLimit] = useState("15000");
 
   const handleNext = () => {
     if (currentStep < 4) { // 4 internal form steps
@@ -79,6 +104,27 @@ const Application = () => {
     }
   };
 
+  const handleEditCreditLimit = () => {
+    setIsEditingCreditLimit(true);
+    setEditingCreditLimit(existingLiabilities.creditCard.limit);
+  };
+
+  const handleSaveCreditLimit = () => {
+    setExistingLiabilities(prev => ({
+      ...prev,
+      creditCard: {
+        ...prev.creditCard,
+        limit: editingCreditLimit
+      }
+    }));
+    setIsEditingCreditLimit(false);
+  };
+
+  const handleCancelCreditLimit = () => {
+    setIsEditingCreditLimit(false);
+    setEditingCreditLimit(existingLiabilities.creditCard.limit);
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
@@ -90,7 +136,7 @@ const Application = () => {
                 <Label className="text-foreground font-medium">Monthly Income (AED)</Label>
                 <Input 
                   type="number"
-                  placeholder="25,000"
+                  // placeholder="25,000"
                   value={formData.monthlyIncome}
                   onChange={(e) => setFormData({...formData, monthlyIncome: e.target.value})}
                   className="mt-1 h-12"
@@ -140,7 +186,7 @@ const Application = () => {
                 <Label className="text-foreground font-medium">Allowances (AED)</Label>
                 <Input 
                   type="number"
-                  placeholder="5,000"
+                  placeholder="0"
                   className="mt-1 h-12"
                 />
               </div>
@@ -160,26 +206,129 @@ const Application = () => {
         return (
           <div className="space-y-6">
             <h2 className="text-xl font-bold text-foreground">Existing Liabilities</h2>
-            <div className="space-y-4">
-              <div>
-                <Label className="text-foreground font-medium">Existing Loans (AED/month)</Label>
-                <Input 
-                  type="number"
-                  placeholder="0"
-                  value={formData.existingLoans}
-                  onChange={(e) => setFormData({...formData, existingLoans: e.target.value})}
-                  className="mt-1 h-12"
-                />
-              </div>
-              <div>
-                <Label className="text-foreground font-medium">Credit Card Limits (AED)</Label>
-                <Input 
-                  type="number"
-                  placeholder="0"
-                  value={formData.creditCards}
-                  onChange={(e) => setFormData({...formData, creditCards: e.target.value})}
-                  className="mt-1 h-12"
-                />
+            <div className="space-y-6">
+              {/* Personal Loan Section */}
+              <Card className={`p-4 border-border transition-all duration-200 ${!liabilitySelections.personalLoan ? 'opacity-50 bg-muted/30' : ''}`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <Checkbox 
+                      id="personalLoan"
+                      checked={liabilitySelections.personalLoan}
+                      onCheckedChange={(checked) => setLiabilitySelections({
+                        ...liabilitySelections,
+                        personalLoan: checked as boolean
+                      })}
+                    />
+                    <h3 className="text-lg font-semibold text-foreground">Personal Loan - ADCB</h3>
+                  </div>
+                  <div className={`w-3 h-3 rounded-full ${liabilitySelections.personalLoan ? 'bg-primary' : 'bg-muted'}`}></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-sm text-muted-foreground">Loan Amount</Label>
+                    <div className="text-lg font-medium text-foreground">AED {parseInt(existingLiabilities.personalLoan.loanAmount).toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <Label className="text-sm text-muted-foreground">Outstanding</Label>
+                    <div className="text-lg font-medium text-foreground">AED {parseInt(existingLiabilities.personalLoan.outstanding).toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <Label className="text-sm text-muted-foreground">Monthly EMI</Label>
+                    <div className="text-lg font-medium text-foreground">AED {parseInt(existingLiabilities.personalLoan.emi).toLocaleString()}</div>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Credit Card Section */}
+              <Card className={`p-4 border-border transition-all duration-200 ${!liabilitySelections.creditCard ? 'opacity-50 bg-muted/30' : ''}`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <Checkbox 
+                      id="creditCard"
+                      checked={liabilitySelections.creditCard}
+                      onCheckedChange={(checked) => setLiabilitySelections({
+                        ...liabilitySelections,
+                        creditCard: checked as boolean
+                      })}
+                    />
+                    <h3 className="text-lg font-semibold text-foreground">Credit Card - CBD</h3>
+                  </div>
+                  <div className={`w-3 h-3 rounded-full ${liabilitySelections.creditCard ? 'bg-primary' : 'bg-muted'}`}></div>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <Label className="text-sm text-muted-foreground">Credit Limit</Label>
+                      {isEditingCreditLimit ? (
+                        <div className="flex items-center space-x-2 mt-1">
+                          <Input
+                            type="number"
+                            value={editingCreditLimit}
+                            onChange={(e) => setEditingCreditLimit(e.target.value)}
+                            className="w-32"
+                            placeholder="Enter amount"
+                          />
+                          <Button
+                            size="sm"
+                            onClick={handleSaveCreditLimit}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Check className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={handleCancelCreditLimit}
+                            className="h-8 w-8 p-0"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="text-lg font-medium text-foreground mt-1">
+                          AED {parseInt(existingLiabilities.creditCard.limit).toLocaleString()}
+                        </div>
+                      )}
+                    </div>
+                    {!isEditingCreditLimit && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={handleEditCreditLimit}
+                        className="h-8 w-8 p-0 ml-4"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </Card>
+
+              {/* Summary Section */}
+              <div className="bg-muted/50 p-4 rounded-lg">
+                <h4 className="text-sm font-medium text-foreground mb-3">Summary (Selected Liabilities)</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Total Monthly EMI:</span>
+                    <span className="text-lg font-semibold text-foreground">
+                      AED {liabilitySelections.personalLoan ? parseInt(existingLiabilities.personalLoan.emi).toLocaleString() : '0'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Total Credit Limit:</span>
+                    <span className="text-lg font-semibold text-foreground">
+                      AED {liabilitySelections.creditCard ? parseInt(existingLiabilities.creditCard.limit).toLocaleString() : '0'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Total Outstanding:</span>
+                    <span className="text-lg font-semibold text-foreground">
+                      AED {(
+                        liabilitySelections.personalLoan ? parseInt(existingLiabilities.personalLoan.outstanding) : 0
+                      ).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

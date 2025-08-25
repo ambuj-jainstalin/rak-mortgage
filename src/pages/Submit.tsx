@@ -10,7 +10,7 @@ const Submit = () => {
     <PageLayout
       currentStep={6}
       totalSteps={6}
-      steps={["Login", "Application", "KYC", "Property", "Calculator", "Offer"]}
+      steps={["Login", "Application", "KYC", "Property", "Loan", "Offer"]}
       showBack={false}
       title="Success"
     >
@@ -65,9 +65,9 @@ const Submit = () => {
                 <span className="text-primary font-bold text-sm">2</span>
               </div>
               <div>
-                <h4 className="font-medium text-foreground">Documentation & Legal</h4>
+                <h4 className="font-medium text-foreground">Documentation</h4>
                 <p className="text-muted-foreground text-sm">
-                  We'll prepare all legal documents and agreements
+                  We'll prepare all documents and agreements
                 </p>
               </div>
             </div>
@@ -79,7 +79,7 @@ const Submit = () => {
               <div>
                 <h4 className="font-medium text-foreground">Loan Disbursement</h4>
                 <p className="text-muted-foreground text-sm">
-                  Your mortgage will be processed and funds transferred
+                  Your mortgage will be disbursed, and cheques prepared for property transfer.
                 </p>
               </div>
             </div>

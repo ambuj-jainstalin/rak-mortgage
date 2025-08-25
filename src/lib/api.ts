@@ -94,7 +94,7 @@ export const createLeadDataFromApplication = (applicationData: any): LeadData =>
     Loan_Amount: applicationData.loanAmount || "5000000",
     Outstanding_Amount: "", // Blank as per requirements
     Equity_Amount: "", // Blank as per requirements
-    Comment: "Some comment ###444  4444 .,;"
+    Comment: "Pre Approval Loan"
   };
   
   console.log('Generated lead data:', leadData);
@@ -104,7 +104,7 @@ export const createLeadDataFromApplication = (applicationData: any): LeadData =>
 export const updateLeadStatus = async (leadId: string): Promise<any> => {
   try {
     // Call our backend endpoint for status update with leadId in URL
-    const response = await fetch(`http://localhost:3001/api/update-lead-status/${leadId}`, {
+    const response = await fetch(`http://localhost:3001/api/update-lead-status/${leadId}/update-lead-status`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

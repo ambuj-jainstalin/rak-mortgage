@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { ApplicationProvider } from "./contexts/ApplicationContext";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+import AECBLoader from "./pages/AECBLoader";
 import Application from "./pages/Application";
 import KYC from "./pages/KYC";
 import PropertySelection from "./pages/PropertySelection";
@@ -39,6 +40,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/aecb-loader" element={<AECBLoader />} />
             <Route path="/application" element={<Application />} />
             <Route path="/kyc" element={<KYC />} />
             <Route path="/property-selection" element={<PropertySelection />} />

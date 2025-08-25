@@ -89,22 +89,23 @@ const Login = () => {
       
       if (data.success && data.user) {
         // Update user data with real information from UAE Pass
-        setUserData({
+        const userInfo = {
           name: data.user.firstnameEN || data.user.fullnameEN || 'User',
           email: data.user.email || 'N/A',
           mobile: data.user.mobile || 'N/A'
-        });
+        };
         
-        // Save UAE Pass data to application context
+        setUserData(userInfo);
+        
+        // Store user data in ApplicationContext for use throughout the app
         updateApplicationData({
-          firstName: data.user.firstnameEN || '',
-          lastName: data.user.lastnameEN || '',
+          firstName: data.user.firstnameEN || data.user.fullnameEN || '',
           email: data.user.email || '',
           mobile: data.user.mobile || '',
           nationality: data.user.nationalityEN || 'UAE'
         });
         
-        console.log('User info fetched and saved to context:', data.user);
+        console.log('User info fetched and stored in context:', data.user);
       } else {
         console.error('Failed to fetch user info:', data.error);
       }
@@ -217,7 +218,7 @@ const Login = () => {
               <Button 
                 size="lg" 
                 className="w-full h-12 font-semibold"
-                onClick={() => navigate("/application")}
+                onClick={() => navigate("/aecb-loader")}
               >
                 Continue Application
               </Button>
@@ -254,7 +255,43 @@ const Login = () => {
                   Privacy Policy
                 </a>
               </label>
+              
             </div>
+            
+          </div>
+        </div>
+        <div className="mt-6 space-y-4">
+          <div className="flex items-start space-x-3">
+            <Checkbox 
+              id="terms" 
+              checked={acceptedTerms}
+              onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+              className="mt-0.5"
+            />
+            <div className="text-xs text-muted-foreground leading-relaxed">
+              <label htmlFor="terms" className="cursor-pointer">
+                By continuing, you agree to Bank to pull AECB report{" "}
+                {/* <a 
+                  href="/terms-of-service" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:text-primary/80 underline"
+                >
+                  Terms of Service
+                </a>{" "}
+                and{" "}
+                <a 
+                  href="/privacy-policy" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:text-primary/80 underline"
+                >
+                  Privacy Policy
+                </a> */}
+              </label>
+              
+            </div>
+            
           </div>
         </div>
       </div>

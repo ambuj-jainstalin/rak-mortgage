@@ -42,22 +42,104 @@ const CameraCapture = ({ isOpen, onClose, onCapture, title, type, captureMode = 
     };
   }, [isOpen, startCamera, stopCamera]);
 
+  const calculateCropArea = () => {
+    const video = videoRef.current;
+    if (!video) return null;
+
+    // Get the overlay element
+    const overlay = video.parentElement?.querySelector('[data-crop-overlay]') as HTMLElement;
+    if (!overlay) return null;
+
+    // Get the container that holds both video and overlay
+    const container = video.parentElement;
+    if (!container) return null;
+
+    const containerRect = container.getBoundingClientRect();
+    const overlayRect = overlay.getBoundingClientRect();
+
+    // Calculate overlay position relative to container
+    const relativeX = overlayRect.left - containerRect.left;
+    const relativeY = overlayRect.top - containerRect.top;
+
+    // Get the actual video dimensions
+    const videoWidth = video.offsetWidth;
+    const videoHeight = video.offsetHeight;
+
+    // Calculate crop area as percentage of video dimensions
+    let cropXPercent = relativeX / videoWidth;
+    let cropYPercent = relativeY / videoHeight;
+    let cropWidthPercent = overlayRect.width / videoWidth;
+    let cropHeightPercent = overlayRect.height / videoHeight;
+
+    // For face capture (oval), adjust the crop area to be more precise
+    if (type === 'face') {
+      // Add a larger margin to ensure we capture the full face
+      const margin = 0.05; // 5% margin
+      cropXPercent = Math.max(0, cropXPercent - margin);
+      cropYPercent = Math.max(0, cropYPercent - margin);
+      cropWidthPercent = Math.min(1, cropWidthPercent + (margin * 2));
+      cropHeightPercent = Math.min(1, cropHeightPercent + (margin * 2));
+    }
+
+    // For ID capture, ensure crop area stays within visible video boundaries
+    if (type === 'id') {
+      // Manual width adjustment for wide camera angles (like on MacBook responsive mode)
+      cropXPercent = cropXPercent + 0.35;
+      const widthReduction = 0.7; // Reduce width by 15% to handle wide angles
+      const heightMargin = 0.02; // Small margin for height
+      
+      // Adjust width separately - reduce it to handle wide camera angles
+      cropWidthPercent = Math.max(0.1, cropWidthPercent - widthReduction); // Minimum 10% width
+      
+      // Adjust height separately - keep it exactly the same as border overlay
+      // No height adjustment to maintain exact overlay height
+      
+      // Ensure crop area doesn't exceed video boundaries
+      cropXPercent = Math.max(0, Math.min(cropXPercent, 1 - cropWidthPercent));
+      cropYPercent = Math.max(0, Math.min(cropYPercent, 1 - cropHeightPercent));
+      
+      // Final bounds check
+      cropWidthPercent = Math.min(cropWidthPercent, 1 - cropXPercent);
+      cropHeightPercent = Math.min(cropHeightPercent, 1 - cropYPercent);
+    }
+
+    // Debug logging
+    console.log('Container rect:', containerRect);
+    console.log('Overlay rect:', overlayRect);
+    console.log('Video dimensions:', { width: videoWidth, height: videoHeight });
+    console.log('Crop percentages:', { 
+      x: cropXPercent, 
+      y: cropYPercent, 
+      width: cropWidthPercent, 
+      height: cropHeightPercent 
+    });
+    console.log('Capture type:', type);
+
+    return {
+      x: cropXPercent,
+      y: cropYPercent,
+      width: cropWidthPercent,
+      height: cropHeightPercent
+    };
+  };
+
   const handleCapture = () => {
-    const imageData = capturePhoto();
+    const cropArea = calculateCropArea();
+    const imageData = capturePhoto(cropArea);
     if (imageData) {
-              if (captureMode === 'front-back' && type === 'id') {
-          // For front-back mode, store the image based on current side
-          if (currentSide === 'front') {
-            setCapturedFront(imageData);
-            setShowPreview(true); // Show preview after front capture
-          } else {
-            setCapturedBack(imageData);
-            setShowPreview(true); // Show preview after back capture
-          }
+      if (captureMode === 'front-back' && type === 'id') {
+        // For front-back mode, store the image based on current side
+        if (currentSide === 'front') {
+          setCapturedFront(imageData);
+          setShowPreview(true); // Show preview after front capture
         } else {
-          // Single capture mode
-          setCapturedImage(imageData);
+          setCapturedBack(imageData);
+          setShowPreview(true); // Show preview after back capture
         }
+      } else {
+        // Single capture mode
+        setCapturedImage(imageData);
+      }
     }
   };
 
@@ -150,9 +232,9 @@ const CameraCapture = ({ isOpen, onClose, onCapture, title, type, captureMode = 
           <div className="relative w-full h-full">
             {captureMode === 'front-back' && type === 'id' ? (
               /* Front-Back Preview */
-              <div className="w-full h-full flex flex-col">
+              <div className="w-full h-full flex flex-col bg-black">
                 <div className="flex-1 flex items-center justify-center p-4">
-                  <div className="grid grid-cols-2 gap-4 w-full max-w-2xl">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
                     <div className="text-center">
                       <h3 className="text-white font-semibold mb-2 flex items-center justify-center">
                         Front Side
@@ -167,15 +249,15 @@ const CameraCapture = ({ isOpen, onClose, onCapture, title, type, captureMode = 
                           <img 
                             src={capturedFront} 
                             alt="Front" 
-                            className="w-full h-48 object-cover rounded-lg border-2 border-green-500"
+                            className="w-full h-56 sm:h-72 object-contain rounded-lg border-2 border-green-500"
                           />
-                          <div className="absolute top-2 right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                            <Check className="h-5 w-5 text-white" />
+                          <div className="absolute top-2 right-2 w-6 h-6 sm:w-8 sm:h-8 bg-green-500 rounded-full flex items-center justify-center">
+                            <Check className="h-3 w-3 sm:h-5 sm:w-5 text-white" />
                           </div>
                         </div>
                       ) : (
-                        <div className="w-full h-48 bg-gray-800 rounded-lg border-2 border-dashed border-gray-600 flex items-center justify-center">
-                          <span className="text-gray-400">Not captured</span>
+                        <div className="w-full h-56 sm:h-72 bg-gray-800 rounded-lg border-2 border-dashed border-gray-600 flex items-center justify-center">
+                          <span className="text-gray-400 text-sm sm:text-base">Not captured</span>
                         </div>
                       )}
                     </div>
@@ -193,35 +275,35 @@ const CameraCapture = ({ isOpen, onClose, onCapture, title, type, captureMode = 
                           <img 
                             src={capturedBack} 
                             alt="Back" 
-                            className="w-full h-48 object-cover rounded-lg border-2 border-green-500"
+                            className="w-full h-56 sm:h-72 object-contain rounded-lg border-2 border-green-500"
                           />
-                          <div className="absolute top-2 right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                            <Check className="h-5 w-5 text-white" />
+                          <div className="absolute top-2 right-2 w-6 h-6 sm:w-8 sm:h-8 bg-green-500 rounded-full flex items-center justify-center">
+                            <Check className="h-3 w-3 sm:h-5 sm:w-5 text-white" />
                           </div>
                         </div>
                       ) : (
-                        <div className="w-full h-48 bg-gray-800 rounded-lg border-2 border-dashed border-gray-600 flex items-center justify-center">
-                          <span className="text-gray-400">Not captured</span>
+                        <div className="w-full h-56 sm:h-72 bg-gray-800 rounded-lg border-2 border-dashed border-gray-600 flex items-center justify-center">
+                          <span className="text-gray-400 text-sm sm:text-base">Not captured</span>
                         </div>
                       )}
                     </div>
                   </div>
                 </div>
-                <div className="absolute bottom-8 left-0 right-0 flex justify-center space-x-4">
+                <div className="absolute bottom-4 sm:bottom-8 left-0 right-0 flex justify-center space-x-2 sm:space-x-4 px-4">
                   <Button
                     onClick={handleRetake}
                     variant="outline"
-                    size="lg"
-                    className="bg-black/50 text-white border-white hover:bg-black/70"
+                    size="sm"
+                    className="bg-black/50 text-white border-white hover:bg-black/70 text-xs sm:text-sm"
                   >
-                    <RotateCcw className="h-5 w-5 mr-2" />
+                    <RotateCcw className="h-4 w-4 mr-1 sm:mr-2" />
                     Retake {currentSide === 'front' ? 'Front' : 'Back'}
                   </Button>
                   {capturedFront && !capturedBack && (
                     <Button
                       onClick={handleNextSide}
-                      size="lg"
-                      className="bg-primary hover:bg-primary/90"
+                      size="sm"
+                      className="bg-primary hover:bg-primary/90 text-xs sm:text-sm"
                     >
                       Capture Back Side
                     </Button>
@@ -229,10 +311,10 @@ const CameraCapture = ({ isOpen, onClose, onCapture, title, type, captureMode = 
                   {capturedFront && capturedBack && (
                     <Button
                       onClick={handleConfirm}
-                      size="lg"
-                      className="bg-primary hover:bg-primary/90"
+                      size="sm"
+                      className="bg-primary hover:bg-primary/90 text-xs sm:text-sm"
                     >
-                      <Check className="h-5 w-5 mr-2" />
+                      <Check className="h-4 w-4 mr-1 sm:mr-2" />
                       Use Both Photos
                     </Button>
                   )}
@@ -240,28 +322,40 @@ const CameraCapture = ({ isOpen, onClose, onCapture, title, type, captureMode = 
               </div>
             ) : (
               /* Single Image Preview */
-              <div className="relative w-full h-full">
-                <img 
-                  src={capturedImage} 
-                  alt="Captured" 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-8 left-0 right-0 flex justify-center space-x-4">
+              <div className="relative w-full h-full flex items-center justify-center bg-black">
+                <div className="max-w-md max-h-96 p-4">
+                  {type === 'face' ? (
+                    <div className="w-64 h-80 sm:w-80 sm:h-96 md:w-96 md:h-[500px] rounded-full overflow-hidden shadow-lg">
+                      <img 
+                        src={capturedImage} 
+                        alt="Captured" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <img 
+                      src={capturedImage} 
+                      alt="Captured" 
+                      className="w-full h-auto object-contain rounded-lg shadow-lg"
+                    />
+                  )}
+                </div>
+                <div className="absolute bottom-4 sm:bottom-8 left-0 right-0 flex justify-center space-x-2 sm:space-x-4 px-4">
                   <Button
                     onClick={handleRetake}
                     variant="outline"
-                    size="lg"
-                    className="bg-black/50 text-white border-white hover:bg-black/70"
+                    size="sm"
+                    className="bg-black/50 text-white border-white hover:bg-black/70 text-xs sm:text-sm"
                   >
-                    <RotateCcw className="h-5 w-5 mr-2" />
+                    <RotateCcw className="h-4 w-4 mr-1 sm:mr-2" />
                     Retake
                   </Button>
                   <Button
                     onClick={handleConfirm}
-                    size="lg"
-                    className="bg-primary hover:bg-primary/90"
+                    size="sm"
+                    className="bg-primary hover:bg-primary/90 text-xs sm:text-sm"
                   >
-                    <Check className="h-5 w-5 mr-2" />
+                    <Check className="h-4 w-4 mr-1 sm:mr-2" />
                     Use Photo
                   </Button>
                 </div>
@@ -276,18 +370,22 @@ const CameraCapture = ({ isOpen, onClose, onCapture, title, type, captureMode = 
               className="w-full h-full object-cover"
               playsInline
               muted
+              autoPlay
             />
             
             {/* Camera Overlay */}
             {type === 'id' && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="border-2 border-white rounded-lg w-96 h-64 opacity-50">
+              <div className="absolute inset-0 flex items-center justify-center p-4">
+                <div 
+                  data-crop-overlay
+                  className="border-2 border-white rounded-lg w-full max-w-md h-56 sm:h-72 opacity-50"
+                >
                   <div className="w-full h-full border-2 border-dashed border-white rounded-lg"></div>
                 </div>
                 {captureMode === 'front-back' && (
-                  <div className="absolute top-4 left-0 right-0 text-center">
+                  <div className="absolute top-4 left-0 right-0 text-center px-4">
                     <div className="inline-flex items-center space-x-2 bg-black/50 px-4 py-2 rounded-full">
-                      <span className="text-white font-semibold">
+                      <span className="text-white font-semibold text-sm sm:text-base">
                         Capture {currentSide === 'front' ? 'Front' : 'Back'} Side
                       </span>
                     </div>
@@ -297,24 +395,26 @@ const CameraCapture = ({ isOpen, onClose, onCapture, title, type, captureMode = 
             )}
             
             {type === 'face' && (
-              <div className="absolute inset-0 flex items-center justify-center">
-              <div className="border-4 border-white rounded-full w-[400px] h-[550px] opacity-50">
-                <div className="w-full h-full border-2 border-dashed border-white rounded-full"></div>
+              <div className="absolute inset-0 flex items-center justify-center p-4">
+                <div 
+                  data-crop-overlay
+                  className="border-4 border-white rounded-full w-96 h-[500px] sm:w-[352px] sm:h-[400px] md:w-[400px] md:h-[520px] opacity-50"
+                >
+                  <div className="w-full h-full border-2 border-dashed border-white rounded-full"></div>
+                </div>
               </div>
-            
-            </div>
             )}
 
             {/* Controls */}
-            <div className="absolute bottom-8 left-0 right-0 flex justify-center items-center space-x-8">
+            <div className="absolute bottom-4 sm:bottom-8 left-0 right-0 flex justify-center items-center space-x-4 sm:space-x-8 px-4">
               {captureMode === 'front-back' && type === 'id' ? (
                 /* Front-Back Mode Controls */
                 <>
                   <Button
                     onClick={handlePreviousSide}
                     variant="outline"
-                    size="lg"
-                    className="bg-black/50 text-white border-white hover:bg-black/70"
+                    size="sm"
+                    className="bg-black/50 text-white border-white hover:bg-black/70 text-xs sm:text-sm"
                     disabled={currentSide === 'front'}
                   >
                     Front
@@ -323,17 +423,17 @@ const CameraCapture = ({ isOpen, onClose, onCapture, title, type, captureMode = 
                   <Button
                     onClick={handleCapture}
                     size="lg"
-                    className="w-16 h-16 rounded-full bg-white hover:bg-gray-200 text-black"
+                    className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white hover:bg-gray-200 text-black"
                     disabled={!isStreaming}
                   >
-                    <Camera className="h-6 w-6" />
+                    <Camera className="h-5 w-5 sm:h-6 sm:w-6" />
                   </Button>
                   
                   <Button
                     onClick={handleNextSide}
                     variant="outline"
-                    size="lg"
-                    className="bg-black/50 text-white border-white hover:bg-black/70"
+                    size="sm"
+                    className="bg-black/50 text-white border-white hover:bg-black/70 text-xs sm:text-sm"
                     disabled={currentSide === 'back' || !capturedFront}
                   >
                     Back
@@ -345,22 +445,22 @@ const CameraCapture = ({ isOpen, onClose, onCapture, title, type, captureMode = 
                   <Button
                     onClick={switchCamera}
                     variant="outline"
-                    size="lg"
+                    size="sm"
                     className="bg-black/50 text-white border-white hover:bg-black/70"
                   >
-                    <RotateCcw className="h-5 w-5" />
+                    <RotateCcw className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
                   
                   <Button
                     onClick={handleCapture}
                     size="lg"
-                    className="w-16 h-16 rounded-full bg-white hover:bg-gray-200 text-black"
+                    className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white hover:bg-gray-200 text-black"
                     disabled={!isStreaming}
                   >
-                    <Camera className="h-6 w-6" />
+                    <Camera className="h-5 w-5 sm:h-6 sm:w-6" />
                   </Button>
                   
-                  <div className="w-12" /> {/* Spacer for symmetry */}
+                  <div className="w-8 sm:w-12" /> {/* Spacer for symmetry */}
                 </>
               )}
             </div>

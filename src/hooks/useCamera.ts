@@ -1,5 +1,12 @@
 import { useState, useRef, useCallback } from 'react';
 
+interface CropArea {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 interface UseCameraReturn {
   videoRef: React.RefObject<HTMLVideoElement>;
   canvasRef: React.RefObject<HTMLCanvasElement>;
@@ -7,7 +14,7 @@ interface UseCameraReturn {
   error: string | null;
   startCamera: () => Promise<void>;
   stopCamera: () => void;
-  capturePhoto: () => string | null;
+  capturePhoto: (cropArea?: CropArea) => string | null;
   switchCamera: () => Promise<void>;
 }
 
@@ -31,8 +38,8 @@ export const useCamera = (): UseCameraReturn => {
       const constraints: MediaStreamConstraints = {
         video: {
           facingMode: facingMode,
-          width: { ideal: 1920 },
-          height: { ideal: 1080 }
+          width: { ideal: 1280, max: 1920 },
+          height: { ideal: 720, max: 1080 }
         },
         audio: false
       };
@@ -63,7 +70,7 @@ export const useCamera = (): UseCameraReturn => {
     setIsStreaming(false);
   }, []);
 
-  const capturePhoto = useCallback((): string | null => {
+  const capturePhoto = useCallback((cropArea?: CropArea): string | null => {
     if (!videoRef.current || !canvasRef.current || !isStreaming) {
       return null;
     }
@@ -74,15 +81,74 @@ export const useCamera = (): UseCameraReturn => {
 
     if (!context) return null;
 
-    // Set canvas dimensions to match video
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    // Get video dimensions
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
+    const videoAspectRatio = videoWidth / videoHeight;
 
-    // Draw the video frame to canvas
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Get display dimensions
+    const displayWidth = video.offsetWidth;
+    const displayHeight = video.offsetHeight;
+    const displayAspectRatio = displayWidth / displayHeight;
 
-    // Return the image as base64 data URL
-    return canvas.toDataURL('image/jpeg', 0.8);
+    // Calculate scaling factors
+    let scaleX = videoWidth / displayWidth;
+    let scaleY = videoHeight / displayHeight;
+
+    // Handle different aspect ratios
+    if (videoAspectRatio > displayAspectRatio) {
+      // Video is wider than display
+      const scaledVideoWidth = displayHeight * videoAspectRatio;
+      const offsetX = (scaledVideoWidth - displayWidth) / 2;
+      scaleX = videoWidth / scaledVideoWidth;
+      scaleY = videoHeight / displayHeight;
+    } else {
+      // Video is taller than display
+      const scaledVideoHeight = displayWidth / videoAspectRatio;
+      const offsetY = (scaledVideoHeight - displayHeight) / 2;
+      scaleX = videoWidth / displayWidth;
+      scaleY = videoHeight / scaledVideoHeight;
+    }
+
+    if (cropArea) {
+      // Create a new canvas for the cropped image
+      const cropCanvas = document.createElement('canvas');
+      const cropContext = cropCanvas.getContext('2d');
+      
+      if (!cropContext) return null;
+
+      // Calculate crop coordinates in video space using percentages
+      const cropX = Math.floor(cropArea.x * videoWidth);
+      const cropY = Math.floor(cropArea.y * videoHeight);
+      const cropWidth = Math.floor(cropArea.width * videoWidth);
+      const cropHeight = Math.floor(cropArea.height * videoHeight);
+
+      // Ensure we don't exceed video boundaries
+      if (cropX >= videoWidth || cropY >= videoHeight || cropWidth <= 0 || cropHeight <= 0) {
+        console.log('Invalid crop area:', { cropX, cropY, cropWidth, cropHeight, videoWidth, videoHeight });
+        return null;
+      }
+
+      // Set crop canvas dimensions
+      cropCanvas.width = cropWidth;
+      cropCanvas.height = cropHeight;
+
+      // Draw the cropped portion
+      cropContext.drawImage(
+        video,
+        cropX, cropY, cropWidth, cropHeight,
+        0, 0, cropWidth, cropHeight
+      );
+
+      console.log('Crop successful:', { cropX, cropY, cropWidth, cropHeight });
+      return cropCanvas.toDataURL('image/jpeg', 0.8);
+    } else {
+      // Original full image capture
+      canvas.width = videoWidth;
+      canvas.height = videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      return canvas.toDataURL('image/jpeg', 0.8);
+    }
   }, [isStreaming]);
 
   const switchCamera = useCallback(async () => {

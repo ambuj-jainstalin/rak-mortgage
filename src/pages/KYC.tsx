@@ -18,7 +18,7 @@ const KYC = () => {
   // Page progress tracking
   const currentPageStep = 3;
   const totalSteps = 6;
-  const steps = ["Login", "Application", "KYC", "Property", "Calculator", "Offer"];
+  const steps = ["Login", "Application", "KYC", "Property", "Loan", "Offer"];
 
   const handleIDCapture = (imageData: string | { front: string; back: string }) => {
     if (typeof imageData === 'string') {
@@ -79,7 +79,7 @@ const KYC = () => {
                   <div className="w-16 h-16 bg-gradient-to-br from-success/20 to-success/10 rounded-full flex items-center justify-center mx-auto border border-success/30">
                     <CheckCircle className="h-8 w-8 text-success" />
                   </div>
-                  <div className="absolute inset-0 rounded-full bg-success/10 animate-ping"></div>
+                  {/* <div className="absolute inset-0 rounded-full bg-success/10 animate-ping"></div> */}
                 </div>
               ) : (
                 <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center mx-auto border border-primary/30 hover:border-primary/50 transition-colors duration-300">
@@ -144,7 +144,7 @@ const KYC = () => {
                   <div className="w-16 h-16 bg-gradient-to-br from-success/20 to-success/10 rounded-full flex items-center justify-center mx-auto border border-success/30">
                     <CheckCircle className="h-8 w-8 text-success" />
                   </div>
-                  <div className="absolute inset-0 rounded-full bg-success/10 animate-ping"></div>
+                  {/* <div className="absolute inset-0 rounded-full bg-success/10 animate-ping"></div> */}
                 </div>
               ) : (
                 <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center mx-auto border border-primary/30 hover:border-primary/50 transition-colors duration-300">

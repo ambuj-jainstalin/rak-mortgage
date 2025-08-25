@@ -18,7 +18,7 @@ const PropertySelection = () => {
   // Page progress tracking
   const currentPageStep = 4;
   const totalSteps = 6;
-  const steps = ["Login", "Application", "KYC", "Property", "Calculator", "Offer"];
+  const steps = ["Login", "Application", "KYC", "Property", "Loan", "Offer"];
 
   const builders = [
     "Emaar Properties",
@@ -38,7 +38,7 @@ const PropertySelection = () => {
     "City Walk"
   ] : [];
 
-  const propertyTypes = ["Apartment", "Villa", "Townhouse", "Penthouse"];
+  const propertyTypes = ["Apartment", "Villa"];
 
   return (
     <PageLayout
@@ -76,12 +76,12 @@ const PropertySelection = () => {
                 <button
                   onClick={() => setPurchaseType("fresh")}
                   className={`py-3 px-4 text-center font-medium transition-colors ${
-                    purchaseType === "fresh" 
+                    purchaseType === "new" 
                       ? "bg-primary text-primary-foreground" 
                       : "bg-background text-foreground hover:bg-muted"
                   }`}
                 >
-                  Fresh
+                  New Sale
                 </button>
                 <button
                   onClick={() => setPurchaseType("offplan")}
